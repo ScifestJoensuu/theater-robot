@@ -1,0 +1,92 @@
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+    
+    <!-- Font, for most textviews, for most buttons -->
+    <style name="FONT">
+        <item name="android:textSize">18sp</item>
+    </style>
+    
+    <!-- Style Button Activity-Main Play -->
+	<style name="buttonsActivityMain">     
+	    <item name="android:layout_weight">10</item> 
+	    <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:scaleType">fitXY</item>
+	</style>
+    
+	<!-- Styles Create Play -->
+    <!-- Button Create Play -->
+	<style name="buttonsCreatePlay" parent="FONT">     
+	    <item name="android:layout_weight">1</item> 
+	    <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+	</style>
+	<!-- Button Select Target-->
+	<style name="buttonsTarget" parent="FONT">     
+	    <item name="android:layout_weight">1</item> 
+	    <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+	</style>
+	<!-- layouts (smaller relative layout) -->
+	<style name="layoutCreatePlay">
+	    <item name="android:layout_marginTop">15dp</item>
+	    <item name="android:layout_marginLeft">10dp</item>
+	    <item name="android:layout_marginRight">20dp</item>
+	    <item name="android:layout_width">fill_parent</item>
+	    <item name="android:layout_height">wrap_content</item>
+	</style>
+	<!-- Spinner -->
+	<style name="SPINNER">
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_centerVertical">true</item>
+		<item name="android:spinnerMode">dropdown</item>
+	</style>
+	<!-- EditText -->
+	<style name="EDITTEXT">
+	    <item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_centerVertical">true</item>
+	</style>
+	<style name="NumberET" parent="EDITTEXT">
+	    <item name="android:layout_width">75dp</item>
+		<item name="android:inputType">number</item>
+	</style>
+	<style name="TextET" parent="EDITTEXT">
+	    <item name="android:layout_width">fill_parent</item>
+		<item name="android:inputType">text</item>
+	</style>
+	<!-- textviews -->
+	<style name="TEXTVIEW" parent="FONT">
+	    <item name="android:layout_centerVertical">true</item>
+	    <item name="android:layout_width">wrap_content</item>
+	    <item name="android:layout_height">wrap_content</item>
+	</style>
+	<style name="textViewCreatePlay" parent="TEXTVIEW">
+	    <item name="android:layout_marginLeft">10dp</item>
+	    <item name="android:layout_marginRight">10dp</item>
+	</style>
+		<style name="textViewCreateRobot" parent="TEXTVIEW"> 
+	    <item name="android:layout_marginLeft">10dp</item>
+	    <item name="android:layout_marginRight">10dp</item>
+	</style>
+	<style name="textViewCreateAction" parent="TEXTVIEW"> 
+	    <item name="android:layout_marginLeft">10dp</item>
+	    <item name="android:layout_marginRight">10dp</item>
+	</style>
+</resources>

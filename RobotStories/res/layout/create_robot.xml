@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/create_robot"
+ 	android:weightSum="100"
+ 	android:orientation="horizontal"
+ 	android:layout_width="fill_parent"
+ 	android:layout_height="fill_parent">
+ 		<!-- LEFT SIDE, robot basic properties -->
+ 		<RelativeLayout
+		android:layout_width="0dp"
+		android:layout_height="fill_parent"
+		android:layout_weight="50">
+			<!-- Name of the robot -->
+			<RelativeLayout
+			    android:id="@+id/ROBOTLayName" 
+				android:layout_width="fill_parent"
+   				android:layout_height="wrap_content">
+				<TextView style = "@style/textViewCreateRobot"
+				    android:id="@+id/TVNameRobot"
+				    android:text="@string/NameRobot"/>
+				<EditText style="@style/TextET"
+					android:id="@+id/ROBOTName"
+					android:layout_marginRight="10dp"
+				    android:layout_toRightOf="@+id/TVNameRobot"/>
+			</RelativeLayout>
+			<!-- Size of Robot -->
+			<RelativeLayout 
+			    android:id="@+id/ROBOTSize"
+			    android:layout_marginTop="10dp"
+			    android:layout_width="fill_parent"
+	   			android:layout_height="wrap_content"
+			    android:layout_below="@+id/ROBOTLayName">
+				<TextView style = "@style/textViewCreateRobot"
+				    android:id="@+id/TVSizeRobot" 
+				    android:text="@string/TVSizeRobot"/>
+				<EditText style="@style/NumberET"
+				    android:id="@+id/ROBOTHSize" 
+				   	android:layout_toRightOf="@+id/TVSizeRobot"/>
+				<Spinner style="@style/SPINNER"
+				    android:id="@+id/RobotTypeSize"
+				    android:layout_toRightOf="@+id/ROBOTHSize" 
+				    android:entries="@array/sizes"/>
+				<TextView style = "@style/textViewCreateRobot"
+				    android:id="@+id/RobotX" 
+				    android:text="@string/X"
+				    android:layout_toRightOf="@+id/RobotTypeSize"/>
+				<EditText style="@style/NumberET"
+				    android:id="@+id/ROBOTVSize"
+				   	android:layout_toRightOf="@+id/RobotX"/>
+				<TextView style = "@style/textViewCreateRobot"
+				    android:id="@+id/RobotTypeSize2" 
+				    android:layout_toRightOf="@+id/ROBOTVSize"/>
+			</RelativeLayout>
+			<!-- Rectangle ports -->
+
+			<!-- Buttons save and add picture -->
+			<LinearLayout 
+			    android:weightSum="100"
+			    android:orientation="horizontal"
+			    android:layout_width="fill_parent"
+   				android:layout_height="match_parent"
+			    android:layout_below="@+id/ROBOTSize">
+			    <Button style = "@style/FONT"
+			        android:layout_width="0dp"
+					android:layout_height="fill_parent"
+					android:layout_weight="50"
+					android:text="@string/RobotSave" 
+			        android:id="@+id/RobotSave"/>
+			    <Button style = "@style/FONT"
+			        android:layout_width="0dp"
+					android:layout_height="fill_parent"
+					android:layout_weight="50"
+					android:text="@string/SelectPic" 
+			        android:id="@+id/RobotPic"/>
+			</LinearLayout>
+		</RelativeLayout>
+ 		<!-- RIGHT SIDE, motors and sensor positions -->
+ 		<LinearLayout
+ 		    android:layout_width="0dp"
+			android:layout_height="fill_parent"
+			android:orientation="vertical"
+			android:layout_weight="50"
+			android:weightSum="100">
+			<!-- Motors -->
+	    	<ScrollView
+				android:layout_width="fill_parent"
+				android:layout_height="0dp"
+				android:layout_weight="50">
+				<TableLayout 
+				    android:layout_height="fill_parent"
+				    android:layout_width="fill_parent"
+				    android:id="@+id/ROBOTTableM">
+				    <TableRow>
+				    	<TextView 
+				    	    android:text="@string/motor"  
+				    	    android:background="@drawable/cells_create_robot"    
+					        android:layout_column="0"
+					        android:layout_weight="2"/>
+					    <TextView 
+					        android:text="@string/type"
+					        android:background="@drawable/cells_create_robot"   
+					        android:layout_column="1"
+					        android:layout_weight="1">
+					    </TextView>
+					    <TextView
+					        android:text="@string/port"
+					        android:background="@drawable/cells_create_robot"  
+					        android:layout_column="2"
+					        android:layout_weight="1">
+					    </TextView>
+					    <TextView
+					        android:text="@string/Delete"
+					        android:background="@drawable/cells_create_robot"  
+					        android:layout_column="3">
+					    </TextView>
+				    </TableRow>
+				</TableLayout>
+			</ScrollView>
+			<!-- Add Motor -->
+			<Button style = "@style/FONT"
+			    android:id="@+id/RobotAddMotor"
+			    android:text="@string/AddMotor"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"/>
+			<!-- Sensores -->
+			<ScrollView
+				android:layout_width="fill_parent"
+				android:layout_height="0dp"
+				android:layout_weight="50">
+				<TableLayout 
+				    android:layout_height="fill_parent"
+				    android:layout_width="fill_parent"
+				    android:id="@+id/ROBOTTableS">
+				    <TableRow>
+				    	<TextView 
+				    	    android:text="@string/sensor"   
+				    	    android:background="@drawable/cells_create_robot"       
+					        android:layout_column="0"
+					        android:layout_weight="2"/>
+					    <TextView 
+					        android:text="@string/type"
+					        android:background="@drawable/cells_create_robot"   
+					        android:layout_column="1"
+					        android:layout_weight="1">
+					    </TextView>
+					    <TextView
+					        android:text="@string/port"
+					        android:background="@drawable/cells_create_robot"   
+					        android:layout_column="2"
+					        android:layout_weight="1">
+					    </TextView>
+					    <TextView
+					        android:text="@string/Delete"
+					        android:background="@drawable/cells_create_robot"  
+					        android:layout_column="3">
+					    </TextView>
+					</TableRow>
+				</TableLayout>
+			</ScrollView>
+			<!-- Add sensor -->
+			<Button style = "@style/FONT"
+			    android:id="@+id/RobotAddSensor"
+			    android:text="@string/AddSensor"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"/>
+		</LinearLayout>
+</LinearLayout>

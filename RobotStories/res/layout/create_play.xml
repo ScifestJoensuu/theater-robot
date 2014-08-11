@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    	android:id="@+id/create_play"
+ 		android:weightSum="100"
+ 		android:orientation="vertical"
+ 		android:layout_width="fill_parent"
+ 		android:layout_height="fill_parent">
+ 		<!-- Input characteristics-->
+		<RelativeLayout
+		    android:orientation="vertical"
+			android:id="@+id/input_create"
+			android:layout_width="fill_parent"
+			android:layout_height="0dp"
+			android:layout_weight="70">
+				<!--Name of the play --> 
+				<RelativeLayout style="@style/layoutCreatePlay"
+				    android:id="@+id/EditNamePlay">
+				    	<TextView style = "@style/textViewCreatePlay"
+				    	    android:id="@+id/TVNamePlay"
+				    		android:text="@string/NamePlay"/>
+				    	<EditText style="@style/TextET"
+				    	    android:layout_marginLeft="45dp"
+				    	    android:text="PLAY"
+				    	    android:textSize="28sp"
+				    	    android:layout_centerVertical="true"
+				    		android:id="@+id/NamePlay"
+				    		android:layout_toRightOf="@+id/TVNamePlay"/>
+				</RelativeLayout>
+				<!--Size of scenario of the play -->
+				<RelativeLayout style="@style/layoutCreatePlay"
+				    android:id="@+id/DataSize"
+				    android:layout_below="@+id/EditNamePlay">
+					<TextView style = "@style/textViewCreatePlay"
+					    android:id="@+id/SizeScenario" 
+					    android:text="@string/SizeScenario"/>
+					<EditText style="@style/NumberET"
+				    	android:layout_marginLeft="25dp"
+				    	android:text="4"
+					    android:id="@+id/HSize" 
+					   	android:layout_toRightOf="@+id/SizeScenario"/>
+					<Spinner style="@style/SPINNER"
+				    	android:layout_marginLeft="10dp"
+					    android:id="@+id/TypeSize"
+					    android:layout_toRightOf="@+id/HSize" 
+					    android:entries="@array/sizes"/>
+					<TextView style = "@style/textViewCreatePlay"
+					    android:id="@+id/X" 
+					    android:text="@string/X"
+					    android:layout_toRightOf="@+id/TypeSize"/>
+					<EditText style="@style/NumberET" android:id="@+id/VSize"
+					    android:text="4"
+					   	android:layout_toRightOf="@+id/X"/>
+					<TextView style = "@style/textViewCreatePlay"
+					    android:id="@+id/TypeSize2" 
+					    android:layout_toRightOf="@+id/VSize"/>
+				</RelativeLayout>
+				<!-- Description -->
+				<RelativeLayout style="@style/layoutCreatePlay"
+				    android:id="@+id/EditDescription" 
+				    android:layout_below="@+id/DataSize">
+				    	<EditText
+				    	    android:id="@+id/Description"
+				    	    android:layout_toRightOf="@+id/TVDescription"
+				    	    android:layout_height="wrap_content"
+				    	    android:layout_width="fill_parent"
+				    	    android:minLines="3"
+				    	    android:gravity="top"
+				    		android:inputType="textMultiLine"/>
+				    	<TextView style = "@style/textViewCreatePlay"
+				    	    android:id="@+id/TVDescription"
+				    		android:text="@string/DescriptionPlay"/>
+				</RelativeLayout>
+		</RelativeLayout>
+		<!-- Buttons -->
+		<TableLayout
+		    android:orientation="vertical"
+			android:id="@+id/buttons"
+			android:layout_width="fill_parent"
+			android:layout_height="0dp"
+			android:layout_weight="30">
+				<TableRow 
+				    android:layout_width="fill_parent"
+					android:layout_height="fill_parent"
+					android:layout_weight="1">
+						<Button style="@style/buttonsCreatePlay"
+						    android:id="@+id/AddAction"
+						    android:drawableTop="@drawable/newaccion"
+					    	android:text="@string/AAction"/>
+						<Button style="@style/buttonsCreatePlay"
+						    android:id="@+id/AddRobot"
+						    android:drawableTop="@drawable/newactor"
+					    	android:text="@string/ARobot"/>
+						<Button style="@style/buttonsCreatePlay"
+						    android:id="@+id/AddRule"
+					    	android:text="@string/ARule"/>
+				</TableRow>
+				<TableRow 
+				    android:layout_width="fill_parent"
+					android:layout_height="fill_parent"
+					android:layout_weight="1">
+						<Button style="@style/buttonsCreatePlay"
+						    android:id="@+id/SetBack"
+						    android:text="@string/SBackgr"/>
+						<Button style="@style/buttonsCreatePlay"
+						    android:id="@+id/LoadSand"
+						    android:text="@string/LoadSandBox"/>
+						<Button style="@style/buttonsCreatePlay"
+						    android:id="@+id/Begin"
+						    android:drawableTop="@drawable/play"
+						    android:text="@string/BeginThePlay"/>
+				</TableRow>
+		</TableLayout>
+</LinearLayout>

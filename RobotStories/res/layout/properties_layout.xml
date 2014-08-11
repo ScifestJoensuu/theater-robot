@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:orientation="horizontal"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content">
+      	<!-- Power -->
+      	<RelativeLayout android:id="@+id/PROPERTIESLayPower"
+      	    android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerHorizontal="true">
+        	<TextView android:id="@+id/PROPERTIESPowerTV" style = "@style/textViewCreateAction"
+			   	android:text="@string/ActionPower"/>
+        	<SeekBar android:id="@+id/PROPERTIESPowerBar"
+        	    android:layout_toRightOf="@+id/PROPERTIESPowerTV"
+          		android:layout_width="200dp"
+          		android:layout_height="wrap_content"
+          		android:layout_margin="10dp"
+         		android:focusableInTouchMode="false"
+          		android:clickable="false"
+     			android:progress="50"
+   				android:max="100"/>
+        	<TextView  android:id="@+id/PROPERTIESSeekValue" style = "@style/TEXTVIEW"
+        	    android:text="50"
+        	    android:layout_toRightOf="@+id/PROPERTIESPowerBar"
+        		android:layout_width="wrap_content"
+        		android:singleLine="true"/>	
+		</RelativeLayout>
+		<!-- Second property -->
+		<LinearLayout android:id="@+id/PROPERTIESSecond"
+		    android:orientation="vertical"
+      	    android:layout_width="wrap_content"
+      	    android:layout_below="@+id/PROPERTIESLayPower"
+			android:layout_height="wrap_content"
+			android:layout_alignLeft="@+id/PROPERTIESLayPower"
+			android:layout_alignRight="@+id/PROPERTIESLayPower"
+			android:layout_centerHorizontal="true">
+		</LinearLayout>
+        <!-- Select a target button -->
+		<Button android:id="@+id/PROPERTIESTargetButton" style = "@style/FONT"
+	    	android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/PROPERTIESSecond"
+		    android:text="@string/ActionTarget" 
+		    android:layout_centerHorizontal="true"/>
+</RelativeLayout>

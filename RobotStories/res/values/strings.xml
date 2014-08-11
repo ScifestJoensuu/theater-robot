@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RobotStories</string>
+    
+    <color name="selectionColor">#FFFFFF</color>
+    <color name="noRobotColor">#FFFFFF</color>
+    
+    <!-- Strings of create play -->
+    <string name="NamePlay">Name of the play</string>
+    <string name="SizeScenario">Size of the scenario</string>
+    <string name="DescriptionPlay">Descripcion of the play</string>
+    <string name="SBackgr">Set background</string>
+    <string name="AAction">Add action</string>
+    <string name="ARobot">Add robot</string>
+    <string name="ARule">Add rule</string>
+    <string name="LoadSandBox">Load Sandbox</string>
+    <string name="BeginThePlay">Save</string>
+    <string name="Delete">Del</string>
+
+	<!--Max and min dimension of the textbox for the sizes -->
+	<dimen name="MinSize">5dp</dimen>
+	<dimen name="MaxSize">10dp</dimen>
+	
+	<!-- CREATE ROBOT -->
+	<string name="NameRobot">Name of the robot</string>
+	<string name="TVSizeRobot">Size of the robot</string>
+	<string name="RobotSave">Save Robot</string>
+	<string name="AddMotor">Add Motor</string>
+	<string name="AddSensor">Add Sensor</string>
+	<!-- Tables -->
+	<string name="motor">Motor</string>
+	<string name="sensor">Sensor</string>
+	<string name="type">Type</string>
+	<string name="port">Port</string>
+	
+	<!-- CREATE ACTION -->
+	<string name="NameAction">Name of the action</string>
+	<string name="ActionSave">Save Action</string>
+	<string name="ActionPower">Power</string>
+	<string name="ActionTarget">Select target</string>
+	<string name="ActionCommon">Common</string>
+	<string name="ActionAll">All actions</string>
+	<string name="ActionPredefined">Predefined actions</string>
+	<string name="ActionCreated">Created actions</string>
+	
+	<!-- Images avalible for actions -->
+   	<string-array name="ActionImages">
+		<item>pausa</item>
+		<item>pencil</item>
+	</string-array>
+	<!-- Images avalible for robots-->
+   	<string-array name="RobotImages">
+		<item>mob_obj</item>
+		<item>newactor</item>
+	</string-array>
+	
+	<!-- ADD MOTOR DIALOG -->
+	<string name="NameOfMotor">Name of motor</string>
+	<string name="MotorType">Motor type</string>
+	
+	<!-- ADD SENSOR DIALOG -->
+	<string name="NameOfSensor">Name of sensor</string>
+	<string name="SensorType">Sensor type</string>
+	
+	<!-- SELECT TARGET DIALOG -->
+	<string name="TARGETScenario">Scenario</string>
+	<string name="TARGETRobot">Robot</string>
+	<string name="TARGETObjMob">Mobile Object</string>
+	<string name="TARGETObjNonMob">Immobile Object</string>
+	
+	<!-- PROPERTIES DIALOG -->
+	<string name="PROPERTIESSave">Save</string>
+	
+	<!-- COMMON VALUES -->
+	<!-- Select a picture -->
+	<string name="SelectPic">Select a Picture</string>
+	<!-- horizontal "X" vertical -->
+	<string name="X">X</string>
+	<!-- SPINNERS -->
+	<!--Spinner sizes for measures-->
+    	<string-array name="sizes">
+			<item>MM</item>
+			<item>CM</item>
+			<item>INCHES</item>
+		</string-array>
+	<!-- Spinner types of motor -->
+	    <string-array name="motorTypes">
+			<item>AC</item>
+			<item>DC</item>
+			<item>SERVO</item>
+		</string-array>
+	<!-- Spinner types of sensor -->	    
+		<string-array name="sensorTypes">
+			<item>PREASURE</item>
+			<item>LIGHT</item>
+			<item>DISTANCE</item>
+		</string-array>
+	<!-- Spinner second property -->
+		<string-array name="secondProperty">
+		    <item>ROTATIONS</item>
+			<item>ANGLE</item>
+			<item>SECONDS</item>
+		</string-array>
+	<!-- Spinner show motors -->
+	<string name="availableMotors">ALL MOTORS</string>
+
+    
+</resources>

@@ -1,0 +1,107 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    	android:id="@+id/principal"
+ 		android:weightSum="100"
+ 		android:orientation="vertical"
+ 		android:layout_width="fill_parent"
+ 		android:layout_height="fill_parent">
+ 		<!-- Buttons row-->
+		<LinearLayout
+		    android:orientation="horizontal"
+			android:id="@+id/main_buttons"
+			android:layout_width="fill_parent"
+			android:layout_height="0dp"
+			android:weightSum="100"
+			android:layout_weight="15">
+				<!--android:contentDescription="add actor" -->
+				<ImageButton style="@style/buttonsActivityMain"
+					android:id="@+id/new_char"
+					android:src = "@+drawable/newactor"/>
+				<ImageButton style="@style/buttonsActivityMain"
+					android:id="@+id/new_acc"
+					android:src = "@+drawable/newaccion"/>
+				<ImageButton style="@style/buttonsActivityMain"
+					android:id="@+id/draw_obj"
+					android:src = "@+drawable/pencil"/>
+				<Button style="@style/FONT"
+					android:id="@+id/name"
+					android:layout_weight="40"
+					android:layout_width="0dp"
+					android:layout_height="fill_parent"/>
+				<ImageButton style="@style/buttonsActivityMain"
+					android:id="@+id/play"
+					android:src = "@+drawable/play"/>
+				<ImageButton
+					android:id="@+id/pausa"
+					style="@style/buttonsActivityMain"
+					android:src = "@+drawable/pausa"/>
+				<ImageButton style="@style/buttonsActivityMain"
+					android:id="@+id/gear"
+					android:src = "@+drawable/gear"/>
+		</LinearLayout>
+		<!-- Middle row -->
+		<LinearLayout
+			android:orientation="horizontal"
+			android:id="@+id/mid"
+			android:layout_width="fill_parent"
+			android:layout_height="0dp"
+			android:weightSum="100"
+			android:layout_weight="70">
+				<!-- Lista robots 1 -->
+				<ScrollView
+					android:layout_width="0dp"
+					android:layout_height="fill_parent"
+					android:layout_weight="10">
+					<LinearLayout android:id="@+id/MAINRobots"
+					    android:orientation="vertical"
+					    android:gravity="center"
+					    android:layout_height="fill_parent"
+						android:layout_width="fill_parent">
+					</LinearLayout>
+				</ScrollView>
+				<!-- Scenario -->
+				<AbsoluteLayout android:id="@+id/MAINscenario"
+				    android:orientation="vertical"
+					android:layout_width="0dp"
+					android:layout_height="fill_parent"
+					android:layout_weight="80"/>
+				<!-- Lista robots 2 -->
+				<ScrollView
+					android:layout_width="0dp"
+					android:layout_height="fill_parent"
+					android:layout_weight="10">
+					<LinearLayout android:id="@+id/MAINRobots2"
+					    android:orientation="vertical"
+					    android:gravity="center"
+					    android:layout_height="fill_parent"
+						android:layout_width="fill_parent">
+					</LinearLayout>
+				</ScrollView>
+		</LinearLayout>
+		<!-- low row (plus, actions, minus) -->
+		<LinearLayout
+			android:orientation="horizontal"
+			android:id="@+id/low"
+			android:layout_width="fill_parent"
+			android:layout_height="0dp"
+			android:weightSum="100"
+			android:layout_weight="15">
+			<ImageButton style="@style/buttonsActivityMain"
+				android:id="@+id/zoomin"
+				android:src = "@+drawable/zoom_in"/>
+			<!-- actions -->
+			<HorizontalScrollView
+				android:layout_width="0dp"
+				android:layout_height="fill_parent"
+				android:layout_weight="80">
+				<LinearLayout android:id="@+id/MAINactions"
+				    android:orientation="horizontal"
+				    android:gravity="center"
+				    android:layout_height="fill_parent"
+					android:layout_width="fill_parent">
+				</LinearLayout>
+			</HorizontalScrollView>
+			<ImageButton style="@style/buttonsActivityMain"
+				android:id="@+id/zoomout"
+				android:src = "@+drawable/zoom_out"/>
+		</LinearLayout>
+</LinearLayout>

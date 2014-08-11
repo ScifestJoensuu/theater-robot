@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/create_action"
+ 	android:weightSum="100"
+ 	android:orientation="horizontal"
+ 	android:layout_width="fill_parent"
+ 	android:layout_height="fill_parent">
+ 		<!-- LEFT SIDE, values of action (name, subactions and save) -->
+ 		<LinearLayout
+		android:layout_width="0dp"
+		android:layout_height="fill_parent"
+		android:orientation="vertical"
+		android:layout_weight="60">
+			<!-- Name of the action-->
+			<RelativeLayout
+				android:layout_width="fill_parent"
+				android:layout_height="0dp"
+				android:layout_weight="10">
+				<TextView android:id="@+id/TVNameAction" style = "@style/textViewCreateAction"
+				    android:text="@string/NameAction"/>
+				<EditText android:id="@+id/ACTIONName" style="@style/TextET"
+					android:layout_marginRight="10dp"
+				    android:layout_toRightOf="@+id/TVNameAction"/>
+			</RelativeLayout>
+			<!-- Sub-actions -->
+			<GridView android:id="@+id/ACTIONsubacts"
+				android:numColumns="auto_fit"
+			    android:gravity="center"
+			    android:stretchMode="columnWidth"
+				android:layout_width="fill_parent"
+				android:layout_height="0dp"
+				android:layout_weight="80"/>
+			<!-- Robots? -->
+			<!-- Picture and save -->
+			<LinearLayout
+					android:layout_width="fill_parent"
+					android:layout_height="0dp"
+					android:orientation="horizontal"
+					android:layout_weight="10">
+					<Button android:id="@+id/ACTIONPicture" style = "@style/FONT"
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"
+						android:layout_weight="1"
+						android:text="@string/SelectPic" />
+					<Button android:id="@+id/ACTIONSave" style = "@style/FONT"
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"
+						android:layout_weight="1"
+						android:text="@string/ActionSave" />
+				</LinearLayout>
+		</LinearLayout>
+		<!-- RIGHT SIDE (predefined subactions, properties of action) -->
+		<LinearLayout 
+ 			android:weightSum="100"
+ 			android:orientation="vertical"
+			android:layout_width="0dp"
+			android:layout_height="fill_parent"
+			android:layout_weight="40">
+			<!-- Search engine -->
+			<LinearLayout 			
+			android:weightSum="2"
+ 			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="0dp"
+			android:layout_weight="9">
+			    <Spinner android:id="@+id/ACTIONSearchType" style="@style/SPINNER"
+			        android:weightSum="1"
+			        android:spinnerMode="dialog"/>
+			    <Spinner android:id="@+id/ACTIONSearchName" style="@style/SPINNER"
+			        android:weightSum="1"
+			        android:spinnerMode="dialog"/>
+			</LinearLayout>
+			<!-- Subactions -->
+	    	<TabHost  android:id="@android:id/tabhost"
+				android:layout_width="fill_parent"
+				android:layout_height="0dp"
+				android:layout_weight="60">
+	        	<LinearLayout
+	            	android:orientation="vertical"
+	            	android:layout_width="fill_parent"
+	            	android:layout_height="fill_parent">
+	            	<TabWidget android:id="@android:id/tabs"
+	                	android:layout_width="wrap_content"
+	                	android:layout_height="wrap_content">
+	                	<TextView
+	                    	android:tag="tab0"
+	                    	android:text="@string/ActionAll"
+	                    	android:layout_width="wrap_content"
+	                    	android:layout_height="fill_parent"/>
+	                	<TextView
+	                    	android:tag="tab1"
+	                    	android:text="@string/ActionCreated"
+	                    	android:layout_width="wrap_content"
+	                    	android:layout_height="fill_parent"/>
+	                	<TextView
+	                    	android:tag="tab2"
+	                    	android:text="@string/ActionPredefined"
+	                    	android:layout_width="wrap_content"
+	                    	android:layout_height="fill_parent"/>
+					</TabWidget>
+	
+	            	<FrameLayout android:id="@android:id/tabcontent"
+	                	android:layout_width="fill_parent"
+	                	android:layout_height="fill_parent">
+	
+	                	<GridView android:id="@+id/ACTIONGVAll"
+						    android:numColumns="auto_fit"
+						    android:gravity="center"
+						    android:stretchMode="columnWidth"
+						    android:layout_width="fill_parent"
+						    android:layout_height="fill_parent"/>
+	                	<GridView android:id="@+id/ACTIONGVCreated"
+						    android:numColumns="auto_fit"
+						    android:gravity="center"
+						    android:stretchMode="columnWidth"
+						    android:layout_width="fill_parent"
+						    android:layout_height="fill_parent"/>
+	                	<GridView android:id="@+id/ACTIONGVPredef"
+						    android:numColumns="auto_fit"
+						    android:gravity="center"
+						    android:columnWidth="50dp"
+						    android:stretchMode="columnWidth"
+						    android:layout_width="fill_parent"
+						    android:layout_height="fill_parent"/>
+	            	</FrameLayout>
+	        	</LinearLayout>
+	    	</TabHost>
+	    	<!-- Properties -->
+	    	<RelativeLayout android:id="@+id/LayoutAccionProperties"
+	 			android:orientation="horizontal"
+				android:layout_width="fill_parent"
+				android:layout_height="0dp"
+				android:layout_weight="30">
+	        	<!-- Power -->
+	        	<RelativeLayout android:id="@+id/ActionLayPower"
+	        	    android:layout_toLeftOf="@+id/ACTIONcheckPower"
+	        	    android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@+id/ActionCommon">
+			        	<TextView android:id="@+id/ActionPowerTV" style = "@style/textViewCreateAction"
+						   	android:text="@string/ActionPower"/>
+			        	<SeekBar android:id="@+id/ACTIONPowerBar"
+			        	    android:layout_toRightOf="@+id/ActionPowerTV"
+		           			android:layout_width="200dp"
+		           			android:layout_height="wrap_content"
+		           			android:layout_margin="10dp"
+		           			android:focusableInTouchMode="false"
+		           			android:clickable="false"
+		      				android:progress="50"
+			   				android:max="100"/>
+			        	<TextView  android:id="@+id/ACTIONSeekValue" style = "@style/textViewCreateAction"
+			        	    android:layout_toRightOf="@+id/ACTIONPowerBar"
+			        		android:layout_width="wrap_content"
+			        		android:singleLine="true"/>	
+		        </RelativeLayout>
+		        <!-- Second property -->
+		        <RelativeLayout android:id="@+id/ActionLaySecondProper"
+		            android:layout_below="@+id/ActionLayPower"
+	        	    android:layout_width="wrap_content"
+	        	    android:layout_toLeftOf="@+id/ACTIONcheckSecond"
+	        	    android:layout_toRightOf="@+id/ACTIONSelect"
+					android:layout_height="wrap_content">
+			        	<LinearLayout android:id="@+id/ActionLaySecond"
+			        	    android:layout_width="wrap_content"
+							android:layout_height="wrap_content">
+			        		<Spinner android:id="@+id/ACTIONSecondPropertySP" style="@style/SPINNER"
+						    	android:entries="@array/secondProperty"/>
+			        		<EditText android:id="@+id/ACTIONSecondPropertyET" style="@style/NumberET"
+								android:layout_marginRight="10dp"/> 
+				    	</LinearLayout>
+				    	<LinearLayout android:id="@+id/ActionLayTarget"
+			        	    android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+			        	    android:layout_below="@+id/ActionLaySecond">
+					    	<Button android:id="@+id/ACTIONTargetButton" style = "@style/FONT"
+				    			android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+					    		android:text="@string/ActionTarget" />
+					    	<ImageView android:id="@+id/ACTIONTargetImage"
+					    	    android:layout_width="wrap_content"
+								android:layout_height="match_parent"
+								android:src="@drawable/newaccion"/>
+					    </LinearLayout>
+		            </RelativeLayout>
+		            <!-- Common properties -->
+		            <TextView  android:id="@+id/ActionCommon" style = "@style/textViewCreateAction"
+		                android:text="@string/ActionCommon"
+		                android:layout_alignParentRight="true"
+		                android:layout_alignParentTop="true"/>
+		            <CheckBox android:id="@+id/ACTIONcheckPower"
+		                android:layout_below="@+id/ActionCommon"
+		                android:layout_alignRight="@+id/ActionCommon"
+		                android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+		                android:layout_alignBaseline="@+id/ActionLayPower"/>
+		            <CheckBox android:id="@+id/ACTIONcheckSecond"
+		                android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+		                android:layout_below="@+id/ACTIONcheckPower"
+		                android:layout_alignRight= "@+id/ACTIONcheckPower"/>
+					<CheckBox android:id="@+id/ACTIONcheckTarget"
+					    android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+		                android:layout_below="@+id/ACTIONcheckSecond"
+		                android:layout_alignRight= "@+id/ACTIONcheckPower"/>
+					<RadioGroup android:id="@+id/ACTIONSelect"
+					    android:layout_below="@+id/ActionLayPower"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content" >
+				        <RadioButton android:id="@+id/ACTIONRBSecProperty"
+				            android:layout_width="wrap_content"
+				            android:layout_height="wrap_content"/>
+				        <RadioButton android:id="@+id/ACTIONRBTarget"
+				            android:layout_width="wrap_content"
+				            android:layout_height="wrap_content"/>
+					</RadioGroup>
+	        </RelativeLayout>
+		</LinearLayout>
+</LinearLayout>

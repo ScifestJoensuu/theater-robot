@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/TARGETroot"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="horizontal">
+    	<Button android:id="@+id/TARGETScenario" style="@style/buttonsTarget"
+		    android:drawableTop="@drawable/scenario"
+	    	android:text="@string/TARGETScenario"/>
+		<Button android:id="@+id/TARGETRobot" style="@style/buttonsTarget"
+		    android:drawableTop="@drawable/newactor"
+	    	android:text="@string/TARGETRobot"/>
+		<Button android:id="@+id/TARGETMobObj" style="@style/buttonsTarget"
+		    android:drawableTop="@drawable/mob_obj"
+	    	android:text="@string/TARGETObjMob"/>
+		<Button android:id="@+id/TARGETNonMobObj" style="@style/buttonsTarget"
+		    android:drawableTop="@drawable/nonmob_obj"
+	    	android:text="@string/TARGETObjNonMob"/>
+</LinearLayout>
