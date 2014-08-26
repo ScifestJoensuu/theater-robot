@@ -3,8 +3,11 @@ package com.auxiliar.robotstories;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
 
 /**
  * This class contains some auxiliar functions used in other classes to deal whit images (resize, get by Name, etc.)
@@ -34,7 +37,10 @@ public class ImageHandler {
      * @return the id of the image
      */
     public int getIdImageByName (String name){
-		return r.getIdentifier(name, "drawable", this.c.getPackageName());
+    	int id=r.getIdentifier(name, "drawable", this.c.getPackageName());
+    	if(id==0)
+    		id=r.getIdentifier("default_image", "drawable", this.c.getPackageName());
+		return id;
     }
     
 	/**
@@ -50,4 +56,31 @@ public class ImageHandler {
 		return imagechanged;
 	}
 
+	/**
+	 * Creates a new imageView which have as background a copy of the background of an ImageView in black and white
+	 * 
+	 * @param imageV The original ImageView
+	 * @return a new imageView whit all the changes
+	 */
+	public ImageView blackAndWhiteImageView(ImageView imageV){
+		Drawable image= imageV.getBackground().getConstantState().newDrawable().mutate();
+	    ColorMatrix cm = new ColorMatrix();
+	    cm.setSaturation(0);
+	    ColorMatrixColorFilter filter = new ColorMatrixColorFilter(cm);
+		image.setColorFilter(filter);
+		ImageView blackAndWhite= new ImageView(this.c);
+		blackAndWhite.setBackground(image);
+		
+		return blackAndWhite;
+	}
+	
+	/**
+	 * Clean all the filters of the background of a imageView
+	 * 
+	 * @param imageV imageView to be changed
+	 */
+	public void clearFilterImageView (ImageView imageV){
+		Drawable image= imageV.getBackground();
+		image.clearColorFilter();
+	}
 }

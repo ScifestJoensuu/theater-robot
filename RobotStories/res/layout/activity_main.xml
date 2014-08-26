@@ -13,35 +13,34 @@
 			android:weightSum="100"
 			android:layout_weight="15">
 				<!--android:contentDescription="add actor" -->
-				<ImageButton style="@style/buttonsActivityMain"
-					android:id="@+id/new_char"
+				<ImageButton android:id="@+id/new_char" style="@style/buttonsActivityMain"
+					android:contentDescription="@string/new_char"
 					android:src = "@+drawable/newactor"/>
-				<ImageButton style="@style/buttonsActivityMain"
-					android:id="@+id/new_acc"
+				<ImageButton android:id="@+id/new_acc" style="@style/buttonsActivityMain"
+					android:contentDescription="@string/new_acc"
 					android:src = "@+drawable/newaccion"/>
-				<ImageButton style="@style/buttonsActivityMain"
-					android:id="@+id/draw_obj"
+				<ImageButton android:id="@+id/draw_obj" style="@style/buttonsActivityMain"
+					android:contentDescription="@string/draw_obj"
 					android:src = "@+drawable/pencil"/>
 				<Button style="@style/FONT"
 					android:id="@+id/name"
 					android:layout_weight="40"
 					android:layout_width="0dp"
 					android:layout_height="fill_parent"/>
-				<ImageButton style="@style/buttonsActivityMain"
-					android:id="@+id/play"
+				<ImageButton android:id="@+id/play" style="@style/buttonsActivityMain"
+					android:contentDescription="@string/play"
 					android:src = "@+drawable/play"/>
-				<ImageButton
-					android:id="@+id/pausa"
-					style="@style/buttonsActivityMain"
+				<ImageButton android:id="@+id/pausa" style="@style/buttonsActivityMain"
+					android:contentDescription="@string/pausa"
 					android:src = "@+drawable/pausa"/>
-				<ImageButton style="@style/buttonsActivityMain"
-					android:id="@+id/gear"
+				<ImageButton android:id="@+id/gear" style="@style/buttonsActivityMain"
+				    android:contentDescription="@string/gear"
 					android:src = "@+drawable/gear"/>
 		</LinearLayout>
 		<!-- Middle row -->
-		<LinearLayout
+		<LinearLayout android:id="@+id/mid"
+		    android:baselineAligned="false"
 			android:orientation="horizontal"
-			android:id="@+id/mid"
 			android:layout_width="fill_parent"
 			android:layout_height="0dp"
 			android:weightSum="100"
@@ -54,7 +53,7 @@
 					<LinearLayout android:id="@+id/MAINRobots"
 					    android:orientation="vertical"
 					    android:gravity="center"
-					    android:layout_height="fill_parent"
+					    android:layout_height="wrap_content"
 						android:layout_width="fill_parent">
 					</LinearLayout>
 				</ScrollView>
@@ -72,7 +71,7 @@
 					<LinearLayout android:id="@+id/MAINRobots2"
 					    android:orientation="vertical"
 					    android:gravity="center"
-					    android:layout_height="fill_parent"
+					    android:layout_height="wrap_content"
 						android:layout_width="fill_parent">
 					</LinearLayout>
 				</ScrollView>
@@ -97,7 +96,7 @@
 				    android:orientation="horizontal"
 				    android:gravity="center"
 				    android:layout_height="fill_parent"
-					android:layout_width="fill_parent">
+					android:layout_width="wrap_content">
 				</LinearLayout>
 			</HorizontalScrollView>
 			<ImageButton style="@style/buttonsActivityMain"

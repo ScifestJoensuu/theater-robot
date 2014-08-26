@@ -4,6 +4,8 @@ import com.example.robotstories.R;
 import com.types.robotstories.Play;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -142,6 +144,29 @@ public class create_play extends Activity{
 		startActivity(intent);
 		finish();
 	}
+	/**
+	 * This onPause method is kind of special, finish the activity and come back to the activity who called this activity
+	 */
+	 public void onBackPressed() { 
+	        new AlertDialog.Builder(this)
+	            .setIcon(android.R.drawable.ic_dialog_alert)
+	            .setTitle("Closing Activity")
+	            .setMessage("Do you want to save or exit?")
+	            .setPositiveButton("I want to save", new DialogInterface.OnClickListener(){
+
+	            public void onClick(DialogInterface dialog, int which) {
+	            	saveAndGo();
+	            }
+
+	        })
+	        .setNegativeButton("I want to exit", new DialogInterface.OnClickListener(){
+
+	            public void onClick(DialogInterface dialog, int which) {
+	            	finish();
+	            }
+	        })
+	        .show();
+	 }
 
 	/**Set an appropiated size for the images of the buttons (still only add action, add robot and play)
 	 * Set name of vertical size based on spin value

@@ -25,6 +25,7 @@ import android.widget.TextView;
  * @author Arturo Gil
  *
  */
+@SuppressWarnings("deprecation")
 public class AccionGridAdapter extends BaseAdapter{
 
 	private Context mContext;
@@ -64,6 +65,13 @@ public class AccionGridAdapter extends BaseAdapter{
     	return this.actions.get(pos).image;
     }
  
+    public ArrayList<Accion> getAcciones(){
+    	return this.actions;
+    }
+    public void SetAcciones(ArrayList<Accion> acciones){
+    	this.actions= acciones;
+    }
+    
 	/**
 	 * Return number of items contained in the gridlayout
 	 */

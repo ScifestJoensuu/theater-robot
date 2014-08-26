@@ -1,8 +1,6 @@
 package com.auxiliar.robotstories;
 
-import android.app.Activity;
 import android.content.ClipData;
-import android.content.Context;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -10,8 +8,11 @@ import android.view.View.DragShadowBuilder;
 import android.view.View.OnDragListener;
 import android.view.View.OnTouchListener;
 import android.widget.AbsoluteLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import com.example.robotstories.R;
+import com.types.robotstories.Accion;
+import com.types.robotstories.Play;
+import com.types.robotstories.Robot;
 
 /**
  * This class implements OnDragListener and it is the listener used to move a robot around the scenario, or to take it from "backstage" to
@@ -24,10 +25,12 @@ import com.example.robotstories.R;
 @SuppressWarnings("deprecation")
 public class DragRobotScenario implements OnDragListener {
 	
-	private Context c;
+	private Play play;
+	ImageHandler image;
 		  
-	public DragRobotScenario (Context c) {
-		this.c= c;
+	public DragRobotScenario (Play p, ImageHandler i) {
+		this.play=p;
+		this.image= i;
 	}
 
 	@Override
@@ -50,10 +53,14 @@ public class DragRobotScenario implements OnDragListener {
 	    		if(v.getClass().equals(LinearLayout.class))
 	    			return false;
 	    		LinearLayout parent = (LinearLayout)shadow.getParent();
-	    		parent.removeView(shadow);
-	    		parent.setBackgroundColor(c.getResources().getColor(R.color.noRobotColor));
 	    		scenario= (AbsoluteLayout) v;
+	    		
+	    		parent.addView(image.blackAndWhiteImageView((ImageView) shadow));
+	    		parent.removeView(shadow);
 	    		scenario.addView(shadow);
+	    		shadow.setTag(parent.getTag());
+
+//	    		parent.setBackgroundColor(c.getResources().getColor(R.color.noRobotColor));
 	    	}
 	    	/*Absolute*/
 	    	else if(aux.equals("abs")){
@@ -62,8 +69,9 @@ public class DragRobotScenario implements OnDragListener {
 		    		LinearLayout parent = (LinearLayout)v;
 	    			if(shadow.getTag().equals(parent.getTag())){
 			    		scenario.removeView(shadow);
+			    		parent.removeViewAt(1);
 			    		parent.addView(shadow);
-			    		parent.setBackgroundColor(((Activity) c).getTitleColor());
+//			    		parent.setBackgroundColor(((Activity) c).getTitleColor());
 				    	shadow.setOnTouchListener(new  OnTouchListener(){
 				        	public boolean onTouch(View view, MotionEvent motionEvent) {
 				                if (motionEvent.getActionMasked() == MotionEvent.ACTION_DOWN) {
@@ -80,7 +88,15 @@ public class DragRobotScenario implements OnDragListener {
 	    				return false;
 	    		}
 	    	}
-	    	/*Nope*/
+	    	/*If we receive an action from a robot we know is because we want to remove it*/
+	    	else if(aux.equals("robotAction")){
+	    		LinearLayout parent = (LinearLayout)shadow.getParent();
+	    		Accion a=(Accion) shadow.getTag();
+	    		Robot padre= play.findRobotByName((String) parent.getTag());
+	    		padre.actions.remove(a);
+	   			parent.removeView(shadow);
+	 
+	    	}
 	    	else
 	    		return false;
 	    	
@@ -88,6 +104,8 @@ public class DragRobotScenario implements OnDragListener {
 	    	int y=  Math.round(event.getY());
 	    	AbsoluteLayout.LayoutParams lp = new AbsoluteLayout.LayoutParams(AbsoluteLayout.LayoutParams.WRAP_CONTENT, 
 	    			AbsoluteLayout.LayoutParams.WRAP_CONTENT, x, y);
+    		Robot r=(Robot) ((View) shadow).getTag();
+    		r.executePrincipalAction(x, y);
 	    	shadow.setLayoutParams(lp);
 	    	shadow.setOnTouchListener(new  OnTouchListener(){
 	        	public boolean onTouch(View view, MotionEvent motionEvent) {

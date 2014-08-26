@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!-- SOME TEXT HAS BEEN SET FOR SOME EDITTEXTS FOR TESTING PURPOSES, PLEASE CLEAN THEM IF NECCESARY -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     	android:id="@+id/create_play"
  		android:weightSum="100"
@@ -19,6 +20,7 @@
 				    	<TextView style = "@style/textViewCreatePlay"
 				    	    android:id="@+id/TVNamePlay"
 				    		android:text="@string/NamePlay"/>
+				    	<!-- TEXT SET FOR TESTING PURPOUSES -->
 				    	<EditText style="@style/TextET"
 				    	    android:layout_marginLeft="45dp"
 				    	    android:text="PLAY"
@@ -34,6 +36,7 @@
 					<TextView style = "@style/textViewCreatePlay"
 					    android:id="@+id/SizeScenario" 
 					    android:text="@string/SizeScenario"/>
+					<!-- TEXT SET FOR TESTING PURPOUSES -->
 					<EditText style="@style/NumberET"
 				    	android:layout_marginLeft="25dp"
 				    	android:text="4"
@@ -48,6 +51,7 @@
 					    android:id="@+id/X" 
 					    android:text="@string/X"
 					    android:layout_toRightOf="@+id/TypeSize"/>
+					<!-- TEXT SET FOR TESTING PURPOUSES -->
 					<EditText style="@style/NumberET" android:id="@+id/VSize"
 					    android:text="4"
 					   	android:layout_toRightOf="@+id/X"/>

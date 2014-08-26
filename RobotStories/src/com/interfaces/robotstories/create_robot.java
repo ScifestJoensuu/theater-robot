@@ -1,5 +1,6 @@
 package com.interfaces.robotstories;
 
+import com.auxiliar.robotstories.BluetoothMethods;
 import com.auxiliar.robotstories.ImageHandler;
 import com.example.robotstories.R;
 import com.types.robotstories.Motor;
@@ -25,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -41,7 +43,7 @@ import android.widget.Toast;
  * <p>Can't go to anywhere until a name and a size is set</p>
  * @author Arturo Gil
  */
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "rawtypes"})
 public class create_robot extends Activity{
 	
 	/*CONSTANTS*/ 
@@ -59,6 +61,10 @@ public class create_robot extends Activity{
      */
 	private static final int PICTURE_DIALOG = 2;
     /**
+     * The value of this constant is {@value}. It is the code to call the dialog for setting the principal action of the robot
+     */
+	private static final int ACTION_DIALOG = 3;
+    /**
      * POSITION OF THE SPINNER IN TABLE ROW. The value of this constant is {@value}.
 	 * (necessary in save motor/sensor, because it needs to know where it is to read its value)
      */
@@ -71,6 +77,7 @@ public class create_robot extends Activity{
 	private static final int POS_TV_ON_ROW = 0;
 	
 	private static final int RECTANGLE_SMALLBUTTON = 40;
+	private static final int RECTANGLE_BIGIMAGE = 80;
 
 	/*Variables received*/
 	Play play;
@@ -91,15 +98,22 @@ public class create_robot extends Activity{
 	/**
 	 * This is the name of the image asociated to the robot. It is initialized whit the value "default_image"
 	 */
-	private String imageName= "default_image";
+	private String imageName= "defaultactor";
+	private String actionName;
+	
 	private ImageHandler images;
 	
+	private BluetoothMethods bluetooth;
+
+	
 	/**
-	 * Add listeners to buttons, and calls to iniLayout
+	 * Add listeners to buttons, and calls to iniLayout, creates the imageHandler and the bluethoothMethods
 	 */
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_robot);
+        this.images = new ImageHandler(this);
+        this.bluetooth = new BluetoothMethods(this);
         iniLayout();
         
         /*Set label 2 of size robot*/
@@ -132,13 +146,40 @@ public class create_robot extends Activity{
 			public void onClick(View v) {
 				showDialog(SENSOR_DIALOG);       
 		}});
-		
+		/*SELECT ACTION*/
+		aux = (Button) this.findViewById(R.id.ROBOTAction);
+		aux.setOnClickListener(new OnClickListener() {    
+			public void onClick(View v) {
+				showDialog(ACTION_DIALOG);       
+		}});
 		/*ADD PICTURE*/
 		aux= (Button) this.findViewById(R.id.RobotPic);
 		aux.setOnClickListener(new OnClickListener(){    
 			public void onClick(View v) {
 				showDialog(PICTURE_DIALOG);
 		}});
+		/*FIND MACHINE*/
+		aux = (Button) this.findViewById(R.id.ROBOTmachine);
+		aux.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				findMachines();
+				
+			}
+		});
+	}
+
+	/**
+	 * Activates the bluetooth, and initializes it in the mode of add devices. After try to find all the devices
+	 * */
+	protected void findMachines() {
+		this.bluetooth.activateBluetooth();
+		if(bluetooth.initializeBlueToothAddDevices()==false){
+			Toast.makeText(getBaseContext(), "Problems at the time of creating the bluetooth", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		this.bluetooth.findDevices();
+		
 	}
 
 	/**
@@ -156,11 +197,12 @@ public class create_robot extends Activity{
 			this.play = (Play) extras.getSerializable("Play");
 			if(this.play==null)
 				finish();
+			
 			this.previousActivity = extras.getString("previousActivity");
 			if(this.previousActivity==null)
 				finish();
-			this.robot = (Robot) extras.getSerializable("Robot");
 			
+			this.robot = (Robot) extras.getSerializable("Robot");
 			if(this.robot!=null){
 				/*Name*/
 				EditText aux= (EditText)findViewById(R.id.ROBOTName);
@@ -172,6 +214,10 @@ public class create_robot extends Activity{
 				aux= (EditText)findViewById(R.id.ROBOTVSize);
 				aux.setText(Integer.toString(this.robot.VSize));
 				this.imageName= this.robot.imageName;
+				if(this.robot.moveAction!=null){
+					this.actionName= this.robot.moveAction.name;
+					this.refreshActionLayout(this.actionName);
+				}
 			}
 			else
 				this.robot= new Robot();
@@ -183,8 +229,9 @@ public class create_robot extends Activity{
 				for (Motor m: this.play.motors){
 					this.dialog_name=m.name;
 					this.dialog_selected=m.type;
-					addRow(id_table, portsNumbers);
+					addRow(id_table, portsNumbers, Integer.toString(this.robot.PortMotor(m)));
 				}
+				this.robot.removeMotors();
 			}
 			if(this.play.sensors!= null){
 				String[] portsNumbers = this.robot.arraySensorPorts();
@@ -192,16 +239,45 @@ public class create_robot extends Activity{
 				for (Sensor s: this.play.sensors){
 					this.dialog_name=s.name;
 					this.dialog_selected=s.type;
-					addRow(id_table, portsNumbers);
+					addRow(id_table, portsNumbers, Integer.toString(this.robot.PortSensor(s)));
 				}
+				this.robot.removeSensors();
 			}
-			this.images = new ImageHandler(this);
 		}
 	}
+ 
+	public void onBackPressed() { 
+        new AlertDialog.Builder(this)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setTitle("Closing Activity")
+            .setMessage("Are you sure you want to leave whitout saving?")
+            .setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+
+            public void onClick(DialogInterface dialog, int which) {
+        		Class comeBack;
+        		try {
+        			comeBack= Class.forName(previousActivity);
+        			Intent intent = new Intent(create_robot.this, comeBack);
+        			intent.putExtra("Play", play);
+        			startActivity(intent);
+        			finish();
+        		} catch (ClassNotFoundException e) {
+        		    AlertDialog ad = new AlertDialog.Builder(getApplicationContext()).create();  
+        		    ad.setCancelable(false); 
+        		    ad.setMessage("Fail loading previous class "+ previousActivity);  
+        		    ad.show();
+        			e.printStackTrace();
+        		} 
+            }
+
+        })
+        .setNegativeButton("No", null)
+        .show();
+    }
 	/**
 	 * Save all the data and come back to the previous activity.
 	 * Checks if there are more than one motor/sensor per port*/
-	@SuppressWarnings("rawtypes")
+	
 	private void saveAndGo(){
 		boolean go=true;
 		
@@ -276,6 +352,11 @@ public class create_robot extends Activity{
 		this.robot.HSize=HSize;
 		this.robot.VSize=VSize;
 		this.robot.imageName=this.imageName;
+		this.robot.device = this.bluetooth.selectedAdress;
+		//TODO What happens if there is no device?
+		if(this.actionName!=null){
+			this.robot.moveAction= this.play.findActionByName(this.actionName);
+		}
 		
 		/*Add robot to play, checks if it already exists*/
 		this.play.AddRobot(this.robot);
@@ -350,7 +431,7 @@ public class create_robot extends Activity{
 		}
 		return true;
 	}
-	/**Create dialog for input data for sensor and for motors and select a picture for the robot
+	/**Create dialog for input data for sensor and for motors, select a picture for the robot, or for selecting the basic action of the robot
 	 * 
 	 * @param id of the dialog to show (motor or sensor)*/
 	protected Dialog onCreateDialog(final int id, Bundle args) {
@@ -382,13 +463,36 @@ public class create_robot extends Activity{
 			case PICTURE_DIALOG:
 				layout = inflater.inflate(R.layout.picture_dialog, (ViewGroup) findViewById(R.id.PICTURETable));
 				builder = new AlertDialog.Builder(this);
-				builder.setTitle("Select a image for the action");
+				builder.setTitle("Select a image for the robot");
 				typeSP=null;
 				nameET=null;
 				
-				/*Puts avalible images*/
-				setActionPics(layout);
+				/*Puts available images*/
+				String[] values = getResources().getStringArray(R.array.RobotImages);
+				this.setButtonPics(layout, values, values, id);
 				break;
+				
+			case ACTION_DIALOG:
+				layout = inflater.inflate(R.layout.picture_dialog, (ViewGroup) findViewById(R.id.PICTURETable));
+				builder = new AlertDialog.Builder(this);
+				builder.setTitle("Select an action for the robot");
+				typeSP=null;
+				nameET=null;
+				
+				/*Puts available images*/
+				String[] images = this.play.getActionImagesWhitTarget();
+				values = this.play.getActionNamesWhitTarget();
+				if(images==null || values==null){
+					Toast.makeText(this, "There are not valid actions created yet", Toast.LENGTH_SHORT).show();
+					return null;
+				}
+				if(images.length!=values.length){
+					Toast.makeText(this, "Corrupted actions", Toast.LENGTH_SHORT).show();
+					return null;
+				}
+				this.setButtonPics(layout, values, images, id);
+				break;
+				
 			default:
 				return null;
 			}
@@ -399,8 +503,8 @@ public class create_robot extends Activity{
 				removeDialog(id);
 			}
 		});
-		/*Create OK button*/	 
-		if(id!= PICTURE_DIALOG)
+		/*Create OK button (only if it is motor or sensor)*/	 
+		if(id== MOTOR_DIALOG || id== SENSOR_DIALOG)
 			builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 					dialog_selected= (String) typeSP.getSelectedItem();
@@ -419,25 +523,36 @@ public class create_robot extends Activity{
 	 * and shows them in the dialog inside a tablelayout which shows its name and the picture
 	 * 
 	 * @param layout the dialog in which the images are shown
+	 * @param images 
 	 */
-	private void setActionPics(View layout) {
-		String[] values = getResources().getStringArray(R.array.RobotImages);
+	private void setButtonPics(View layout, String[] values, String[] images, final int id) {
 		TableLayout tl = (TableLayout) layout.findViewById(R.id.PICTURETable);
+		int i=0;
 		
 		for(final String name: values){
 			TableRow tr = new TableRow(this);
+			tr.setGravity(Gravity.CENTER_HORIZONTAL);
 			tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.FILL_PARENT));
 			/* Create a button for the row */
 			Button botaux = new Button (this);
 			botaux.setText(name);
 			botaux.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.FILL_PARENT));
-			BitmapDrawable imagechanged= this.images.resizeImage(name, create_robot.RECTANGLE_SMALLBUTTON);
+			BitmapDrawable imagechanged= this.images.resizeImage(images[i], create_robot.RECTANGLE_SMALLBUTTON);
+			i++;
 			botaux.setCompoundDrawablesWithIntrinsicBounds(null, null, imagechanged, null);
 			botaux.setOnClickListener(new OnClickListener() {
 				String selected= name;
+				int dialog= id;
 				public void onClick(View v) {
-					imageName= selected;
-					removeDialog(PICTURE_DIALOG);
+					if(this.dialog==PICTURE_DIALOG){
+						imageName= this.selected;
+						removeDialog(PICTURE_DIALOG);
+					}
+					if(this.dialog==ACTION_DIALOG){
+						actionName= this.selected;
+						refreshActionLayout(this.selected);
+						removeDialog(ACTION_DIALOG);
+					}
 				}
 			});
 			/* Add objects to row. */
@@ -447,6 +562,19 @@ public class create_robot extends Activity{
 			tl.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.FILL_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));	
 		}
 		
+	}
+
+	/**Put the name and the image of the action which is the move action of the robot
+	 * 
+	 * @param action the name of the action
+	 */
+	private void refreshActionLayout(String action) {
+		/*Image*/
+		ImageView imageView= (ImageView) this.findViewById(R.id.ROBOTActionImage);
+		imageView.setImageDrawable(this.images.resizeImage(this.play.findActionByName(action).image, RECTANGLE_BIGIMAGE));
+		/*name*/
+		TextView name= (TextView) this.findViewById(R.id.ROBOTActionName);
+		name.setText(action);
 	}
 
 	/**Check if the name is already in use by another motor or sensor (respectively) or if it null-> show toast
@@ -475,7 +603,7 @@ public class create_robot extends Activity{
 				}
 				this.play.AddMotor(new Motor (this.dialog_name, this.dialog_selected));
 				id_table = R.id.ROBOTTableM;
-				this.addRow(id_table, this.robot.arrayMotorPorts());
+				this.addRow(id_table, this.robot.arrayMotorPorts(), null);
 				break;			
 			case SENSOR_DIALOG:
 				if (play.findSensorByName(dialog_name)!=null){
@@ -485,7 +613,7 @@ public class create_robot extends Activity{
 				}
 				this.play.AddSensor(new Sensor (this.dialog_name, this.dialog_selected));
 				id_table = R.id.ROBOTTableS;
-				this.addRow(id_table, this.robot.arraySensorPorts());
+				this.addRow(id_table, this.robot.arraySensorPorts(), null);
 				break;
 			default:
 				return;
@@ -496,8 +624,10 @@ public class create_robot extends Activity{
 	 * 
 	 * @param id_table case motor/sensor
 	 * @param portsNumbers array for the spinner whit the number of the ports
+	 * @param value the initial value of the spinner. If this value is not contained in the array of valid values (portsNumber), it will be set
+	 * to "-"
 	 */
-	protected void addRow(int id_table, String[] portsNumbers){
+	protected void addRow(int id_table, String[] portsNumbers, String value){
 		/* Find Tablelayout defined in main.xml */
 		TableLayout tl = (TableLayout) findViewById(id_table);
 		/* Create a new row to be added. */
@@ -524,6 +654,10 @@ public class create_robot extends Activity{
 		spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		ports.setAdapter(spinnerArrayAdapter);
 		ports.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1));
+		for(int i=0; i<portsNumbers.length; i++){
+			if(portsNumbers[i].equals(value))
+				ports.setSelection(i);
+		}
 		
 		/*Delete Button*/
 		ImageButton botaux = new ImageButton(this);

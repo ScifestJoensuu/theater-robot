@@ -52,7 +52,7 @@ public class DragActionToSubaction implements OnDragListener {
 	    	Accion add= (Accion) extras.getSerializable("Accion");
 	    	
 	    	this.Adapter.AddAction(id_marco, this.pos_inside, add); 
-	    	GridView grid = (GridView) marco.getParent();
+	    	GridView grid = (GridView) marco.getParent().getParent();
 	    	grid.setAdapter(this.Adapter);
 	      return true;
 	    }

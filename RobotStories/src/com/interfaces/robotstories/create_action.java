@@ -7,7 +7,7 @@ import com.auxiliar.robotstories.DragActionToSubaction;
 import com.auxiliar.robotstories.ImageHandler;
 import com.auxiliar.robotstories.SubAccionGridAdapter;
 import com.example.robotstories.R;
-import com.types.robotstories.Accion;
+import com.types.robotstories.Accion; 
 import com.types.robotstories.Play;
 import com.types.robotstories.Robot;
 
@@ -22,6 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,6 +32,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -51,6 +53,7 @@ import android.widget.TabHost.TabContentFactory;
 import android.widget.TabHost.TabSpec;
 import android.widget.TabWidget;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * <p>This activity creates a graphic interface to create or modify an action.</p>
@@ -71,7 +74,10 @@ import android.widget.TextView;
  * @author Arturo Gil
  *
  */
+@SuppressWarnings({"deprecation", "rawtypes"})
 public class create_action extends Activity{
+	
+	/*TRABAJAR CON TARGET, hacer como con common att, y quitar lo de ponerlo automatico*/
 	
     /**
      * The value of this constant is {@value}. It is the code to call the dialog for defining a target
@@ -247,7 +253,7 @@ public class create_action extends Activity{
 	/**
 	 * Save all the data and come back to the previous activity. All the subactions are taken from the adapter
 	 * */
-	@SuppressWarnings("rawtypes")
+
 	protected void saveAndGo() {
 		boolean go=true;
 		
@@ -268,13 +274,33 @@ public class create_action extends Activity{
 		}
 		if(go==false)
 			return;
-		
+		/*If we didn't came here to modify an already created action, we create a new one*/
 		if(this.accion==null)
 			this.accion=new Accion();
+		/*Let's check the motors of the subactions*/
+		ArrayList<Accion[]> subactions= this.adapter.getAcciones();
+		for(Accion[] macro: subactions){
+			for(Accion a: macro){
+				if(a!=null){
+					if (this.accion.addMotors(a.motors)==false){
+						Toast.makeText(this, "You are creating an action whit too many different motors", Toast.LENGTH_SHORT).show();
+						this.accion.motors.clear();
+						return;
+					}
+				}
+			}
+		}
+		/*If there is no problem whit the motors we can add the subactions*/
+		this.accion.subactions=subactions;
 		this.accion.name= this.name;
 		this.accion.image= this.imageName;
-		this.accion.subactions= this.adapter.getAcciones();
 		this.accion.getSubActsCommonAtt();
+		if(this.accion.setCommonTarget()==false){
+			Toast.makeText(this, "You are creating an action whit different types of target", Toast.LENGTH_SHORT).show();
+			this.accion.motors.clear();
+			return;
+		}
+			
 		/*Add action to play, checks if it already exists*/
 		this.play.AddAction(this.accion);
 		
@@ -295,6 +321,35 @@ public class create_action extends Activity{
 			e.printStackTrace();
 		}
 	}
+
+    public void onBackPressed() { 
+        new AlertDialog.Builder(this)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setTitle("Closing Activity")
+            .setMessage("Are you sure you want to leave whitout saving?")
+            .setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+
+            public void onClick(DialogInterface dialog, int which) {
+        		Class comeBack;
+        		try {
+        			comeBack= Class.forName(previousActivity);
+        			Intent intent = new Intent(create_action.this, comeBack);
+        			intent.putExtra("Play", play);
+        			startActivity(intent);
+        			finish();
+        		} catch (ClassNotFoundException e) {
+        		    AlertDialog ad = new AlertDialog.Builder(getApplicationContext()).create();  
+        		    ad.setCancelable(false); 
+        		    ad.setMessage("Fail loading previous class "+ previousActivity);  
+        		    ad.show();
+        			e.printStackTrace();
+        		} 
+            }
+
+        })
+        .setNegativeButton("No", null)
+        .show();
+    }
 
 	/**
 	 * Let you choose between rotations/angle/second and selecting a target, only allows to set as a common property
@@ -375,7 +430,7 @@ public class create_action extends Activity{
 		
 		/*Tab*/
 		TabHost properties = (TabHost) findViewById(android.R.id.tabhost);
-		iniTabHost(properties);	
+		this.iniTabHost(properties);	
 		/*Power*/
 		final SeekBar bar =(SeekBar) this.findViewById(R.id.ACTIONPowerBar);
 		setPowerValue(bar.getProgress());
@@ -387,10 +442,14 @@ public class create_action extends Activity{
 	 * Set the values for the search engine:
 	 * -First check the avalible motor types defined in the "string.xml", and add the value "ALL TYPES" (default value)
 	 * -For the second check the names of all the motors defined in the play, and add the value "ALL MOTORS" (default value)
+	 * -Set the listerner to make the search when the values are changed
 	 * 
 	 * Comment: The search is still not implemented
 	 */
 	private void iniSpinners(){
+		final Spinner type= (Spinner) findViewById(R.id.ACTIONSearchType);
+		final Spinner name = (Spinner) findViewById(R.id.ACTIONSearchName);
+
 		/*First Spinner*/
 		/*Get the original values*/
 		String[] values = getResources().getStringArray(R.array.motorTypes);
@@ -401,19 +460,103 @@ public class create_action extends Activity{
 			newValues[i]= values[i-1]; 
 		}
 		/*Create Spinner*/
-		Spinner aux= (Spinner) findViewById(R.id.ACTIONSearchType);
+
 		ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item, newValues);
-		aux.setAdapter(spinnerArrayAdapter);
-		/*Second Spinner*/
-		/*Get and set the values from the motors of the play*/
-		newValues= new String [this.play.motors.size()+1];
-		newValues[0]= "ALL MOTORS";
-		for(int i=1; i<=this.play.motors.size();i++){
-			newValues[i]= this.play.motors.get(i-1).name; 
+		type.setAdapter(spinnerArrayAdapter);
+		
+		this.setNameSpinnerValues(name, null);
+		
+		type.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				String nameValue=null;
+				String typeValue=null;
+				
+				if(name.getSelectedItemPosition()!=0)
+					nameValue=(String)name.getSelectedItem();
+				
+				if(type.getSelectedItemPosition()!=0){
+					typeValue = (String)type.getSelectedItem();
+				}
+				setNameSpinnerValues(name, typeValue);
+				filterBy(nameValue, typeValue);
+			}
+
+			public void onNothingSelected(AdapterView<?> parent) {
+			}
+		});
+
+		name.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {	
+				String nameValue=null;
+				String typeValue=null;
+				
+				if(name.getSelectedItemPosition()!=0)
+					nameValue=(String)name.getSelectedItem();
+				
+				if(type.getSelectedItemPosition()!=0)
+					typeValue = (String)type.getSelectedItem();
+				
+				filterBy(nameValue, typeValue);
+			}
+
+			public void onNothingSelected(AdapterView<?> parent) {
+			}
+		});
+
+	}
+	
+	/**
+	 * Filter the name of motors of the spinners for the search, based on the type selected in the other spinner
+	 * 
+	 * @param name the spinner whit the names of the motors
+	 * @param type type of the motors to be shown, null for all motors
+	 */
+	private void setNameSpinnerValues(final Spinner name, String type){
+		String[] newValues = this.play.getMotorsByType(type);
+		ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item, newValues);
+		name.setAdapter(spinnerArrayAdapter);
+	}
+
+	/**
+	 * Filter the actions of the gridView based on a motor name or/and a motor type
+	 * 
+	 * @param name of the motor. Null for all names
+	 * @param type of the motor. Null for all types
+	 */
+	protected void filterBy(String name, String type) {
+		ArrayList<Accion> sorted;
+		for(int i=0; i<3; i++){
+			GridView acciones;
+			if(i==0){
+				acciones= (GridView) this.findViewById(R.id.ACTIONGVAll);
+				sorted = this.play.sortByMotor(name, type, this.allActions);
+			}
+			else if (i==1){
+				acciones= (GridView) this.findViewById(R.id.ACTIONGVCreated);
+				sorted = this.play.sortByMotor(name, type, this.play.acciones);
+			}
+			else if (i==2){
+				acciones= (GridView) this.findViewById(R.id.ACTIONGVPredef);
+				sorted = this.play.sortByMotor(name, type, this.play.predefAcciones);
+			}
+			else
+				return;
+			
+			if(sorted==null){
+				Toast.makeText(this, "Corrupted motors", Toast.LENGTH_SHORT).show();
+				return;
+			}
+			AccionGridAdapter adapter= (AccionGridAdapter) acciones.getAdapter();
+			if(adapter==null)
+				return;
+
+			adapter.SetAcciones(sorted);
+			adapter.notifyDataSetChanged();
 		}
-		aux= (Spinner) findViewById(R.id.ACTIONSearchName);
-		spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item, newValues);
-		aux.setAdapter(spinnerArrayAdapter);
 	}
 
 	/**
@@ -469,8 +612,8 @@ public class create_action extends Activity{
 	    			AccionGridAdapter adapterS=adapter;
 	    			View actualizedGrid= addPreviousActions(tabContentView, add, adapterS);
 	    			return actualizedGrid;
-	    			}
-	    		});
+	    		}
+	    	});
 	    	if (tabWidgetTextView.getBackground() == null) {
 	    		tabSpec.setIndicator(tabWidgetTextView.getText());
 	    	}
@@ -573,7 +716,6 @@ public class create_action extends Activity{
         
         DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
         view.startDrag(data, shadowBuilder, view, 0);
-		
 	}
 
 	/**
@@ -646,6 +788,7 @@ public class create_action extends Activity{
 		
 		for(final String name: values){
 			TableRow tr = new TableRow(this);
+			tr.setGravity(Gravity.CENTER_HORIZONTAL);
 			tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.FILL_PARENT));
 			/* Create a button for the row */
 			Button botaux = new Button (this);

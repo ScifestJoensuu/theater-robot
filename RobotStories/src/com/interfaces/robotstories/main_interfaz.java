@@ -2,6 +2,7 @@ package com.interfaces.robotstories;
 
 import java.util.ArrayList;
 
+import com.auxiliar.robotstories.BluetoothMethods;
 import com.auxiliar.robotstories.DragRobotScenario;
 import com.auxiliar.robotstories.ImageHandler;
 import com.example.robotstories.R;
@@ -56,19 +57,13 @@ import android.widget.Toast;
  * @author Arturo Gil
  *
  */
-/**
- * @author Arturo Gil
- *
- */
-/**
- * @author Arturo Gil
- *
- */
+@SuppressWarnings("deprecation")
 public class main_interfaz extends Activity {
 	
 	Play play;
 
 	private ImageHandler images;
+	private BluetoothMethods bluetooth;
 	
     /**
      * The value of this constant is {@value}. It is the size of the image for the ImageButtons and the actions of the gridview
@@ -88,6 +83,9 @@ public class main_interfaz extends Activity {
 	private int positionAcc;
 	private View selectedView;
 	
+	/**
+	 * Calls iniMainInter, set the OnClickListeners for the buttons of the main interface, and the onDragListener for the scenario
+	 */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -129,10 +127,62 @@ public class main_interfaz extends Activity {
         
 		/*Scenario*/
 		AbsoluteLayout scenario= (AbsoluteLayout) this.findViewById(R.id.MAINscenario);
-		scenario.setOnDragListener(new DragRobotScenario(this));
-    }
+		scenario.setOnDragListener(new DragRobotScenario(this.play, images));
+		
+		/*Send actions to robots (Play)*/
+		ImageButton imageButton = (ImageButton) this.findViewById(R.id.play);
+		imageButton.setOnClickListener(new OnClickListener() {
 
-    /**
+			public void onClick(View v) {
+				bluetooth.activateBluetooth();
+				bluetooth.initializeBlueToothSend();
+				sendSignalstoRobots();
+			}
+		});
+		
+		/*Stop sending actions (Pause)*/
+		imageButton = (ImageButton) this.findViewById(R.id.pausa);
+		imageButton.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				bluetooth.disableBlueetooth();
+			}
+		});
+    }
+    
+    public void onBackPressed() { 
+        new AlertDialog.Builder(this)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setTitle("Closing Activity")
+            .setMessage("Are you sure you want to exit RobotStories?")
+            .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();    
+            }
+
+        })
+        .setNegativeButton("No", null)
+        .show();
+    }
+    
+    protected void sendSignalstoRobots() {
+		// TODO Auto-generated method stub
+		for(Robot r: this.play.robots){
+			if(r.device!=null){
+				this.bluetooth.conect(r.device);
+				Toast.makeText(this, "Device selected for robot "+ r.name, Toast.LENGTH_SHORT).show();
+				for(Accion a: r.actions){
+					this.bluetooth.sendInfo(a.transformActionIntoCode());	
+				}
+			}
+			/*else
+				Toast.makeText(this, "No device selected for robot "+ r.name, Toast.LENGTH_SHORT).show();*/
+		}
+	}
+
+	/**
      * <p>Creates the LinearLayouts which represents each of the actions of the play. Set the longClick listener (for modify an action), and 
      * the ontouch listener (to create the shadow which allows to drag them into the robot).</p>
      * ATENTION: Removes the action from the play before sending it to modify
@@ -247,7 +297,7 @@ public class main_interfaz extends Activity {
 	                	return false;
 	        }});
 
-			nueva.setOnDragListener(new DragRobotScenario(this));
+			nueva.setOnDragListener(new DragRobotScenario(this.play, this.images));
 			/*If it exist, creates, if not, deletes*/
 			nueva.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
@@ -302,28 +352,45 @@ public class main_interfaz extends Activity {
      * @param r the robot which actions will be shown
      * @param posRobot the position of the robot inside the play (for setting the id of the created view)
      */
-    protected void addRobotActionsView(int x, int y, int height, Robot r, int posRobot) {
+    
+	protected void addRobotActionsView(int x, int y, int height, Robot r, int posRobot) {
 		AbsoluteLayout scenario = (AbsoluteLayout) this.findViewById(R.id.MAINscenario);
 		if(height<main_interfaz.RECTANGLE_BUTTON)
 			height= height + main_interfaz.RECTANGLE_BUTTON;
 		int maximumSize= scenario.getMeasuredWidth()/3;
-		if (x<0)
-			x= scenario.getMeasuredWidth()-maximumSize;
-    	AbsoluteLayout.LayoutParams lp = new AbsoluteLayout.LayoutParams(maximumSize, height, x, y);
-    	LinearLayout aux= new LinearLayout(this);
     	HorizontalScrollView scroll= new HorizontalScrollView(this);
-    	scenario.addView(scroll, lp);
+    	LinearLayout aux= new LinearLayout(this);
     	scroll.setId(posRobot);
-    	this.laysRobots[posRobot]=posRobot;
-    	scroll.addView(aux);
     	
-    	aux.setBackgroundResource(R.drawable.cells_robot_actions);
-    	aux.setGravity(Gravity.CENTER_VERTICAL);
+		if (x<0){
+			aux.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.FILL_PARENT));
+			
+			LinearLayout rightAuxiliar= new LinearLayout(this);
+			scroll.addView(rightAuxiliar);
+			scroll.setFillViewport(true);
+			
+			rightAuxiliar.addView(aux);
+			rightAuxiliar.setGravity(Gravity.RIGHT);
+			
+			/*Get x coordinate*/
+			x= scenario.getMeasuredWidth()-maximumSize;
+		}
+		else
+			scroll.addView(aux);
+		
+		aux.setGravity(Gravity.CENTER_VERTICAL);
+		aux.setBackgroundResource(R.drawable.cells_robot_actions);
+		
+    	AbsoluteLayout.LayoutParams lp = new AbsoluteLayout.LayoutParams(maximumSize, height, x, y);
+    	scenario.addView(scroll, lp);
+    	
+    	this.laysRobots[posRobot]=posRobot;
     	aux.setTag(r.name);
     	int posAccion=0;
     	for(Accion a: r.actions){
     		LinearLayout accion = this.addActiontoRobot(posAccion, aux);
     		accion.setBackground(images.resizeImage(a.image,main_interfaz.RECTANGLE_BUTTON));
+    		accion.setTag(a);
     		posAccion++;
     	}
     	/*Last accion*/
@@ -335,7 +402,7 @@ public class main_interfaz extends Activity {
      * 
      * @param pos the position of the action inside the robot ("chronological" order)
      * @param allActions the LinearLayout which contains all the previous actions
-     * @return an empty linearLayout
+     * @return an empty linearLayout whit the listeners
      */
     protected LinearLayout addActiontoRobot (int pos, LinearLayout allActions){
     	LinearLayout inside= new LinearLayout(this);
@@ -371,8 +438,8 @@ public class main_interfaz extends Activity {
 		finish();
     }
     /**
-     * It is called by the method OnCreate. Read the bundle whit the information of the play, creates the imageHandler, set the name of the
-     * play in the modify play button, and calls the methods "setPlatActions" and "setPlayRobots"
+     * It is called by the method OnCreate. Read the bundle whit the information of the play, creates the imageHandler and the BluetoothMethods, 
+     * set the name of the play in the modify play button, and calls the methods "setPlatActions" and "setPlayRobots"
      *
 	 * @return <p>true if everything is allright</p>
 	 * 			<p>false if the bundle is null</p>
@@ -380,11 +447,15 @@ public class main_interfaz extends Activity {
 	private boolean iniMainInter() {
 		
 		Bundle extras = getIntent().getExtras();
-		if(extras == null){
+		if(extras == null)
 			return false;
-		}else{         
-			this.play = (Play) extras.getSerializable("Play");
-			this.images = new ImageHandler(this);
+			
+		this.play = (Play) extras.getSerializable("Play");
+		
+		this.images = new ImageHandler(this);
+		this.bluetooth = new BluetoothMethods(this);
+		if(this.bluetooth.initializeBlueToothSend()==false){
+			Toast.makeText(this, "Problems at the time of creating the bluetooth", Toast.LENGTH_SHORT).show();
 		}
 		
 		Button create = (Button)this.findViewById(R.id.name);
@@ -559,7 +630,9 @@ public class main_interfaz extends Activity {
 	}
 
 	/**
-	 * Class which implements an OnDragListener. It is used in the method "AddActiontoRobot".
+	 * <p>Class which implements an OnDragListener. It is used in the method "AddActiontoRobot". </p>
+	 * <p>This drag listener creates the common properties dialog if necessary. The deletion of any action of a robot is done in 
+	 * DragRobotScenario</p>
 	 * 
 	 * @author Arturo Gil
 	 *
@@ -632,9 +705,12 @@ public class main_interfaz extends Activity {
 		    		/*Get the robot parent*/
 		    		LinearLayout viewParent= (LinearLayout) shadow.getParent();
 		    		Robot padre= play.findRobotByName((String) viewParent.getTag());
-		    		/*If they are not the same, DO NOTHING, but should delete*/
+		    		/*If they are not the same, it will be deleted, but not here, in DRAGROBOTSCENARIO*/
 		    		if(r.equals(padre)==false){
 		    			return false;
+		    		}
+		    		if((this.position+1)==padre.actions.size()){
+		    			return true;
 		    		}
 		    		/*Remove or move? REMOVE*/
 		    		else{
@@ -643,6 +719,12 @@ public class main_interfaz extends Activity {
 	    			padre.changePosAction(a, this.position);
 	    			v.setTag(a);
 	    			v.setBackground(images.resizeImage(a.image,main_interfaz.RECTANGLE_BUTTON));
+	    			/*Now we remove the action from the previous view*/
+	    			viewParent.removeView(shadow);
+	    			/*If this is the last action added, we add a new empty space*/
+	    			if((this.position+1)>padre.actions.size()){
+	    				addActiontoRobot(this.position, robotActs);
+	    			}
 		    	}
 		    	else
 		    		return false;

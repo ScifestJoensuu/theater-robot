@@ -28,6 +28,8 @@
 	<string name="RobotSave">Save Robot</string>
 	<string name="AddMotor">Add Motor</string>
 	<string name="AddSensor">Add Sensor</string>
+	<string name="SetActionMove">Set basic action</string>
+	<string name="SelectMachine">Find a machine to pair</string>
 	<!-- Tables -->
 	<string name="motor">Motor</string>
 	<string name="sensor">Sensor</string>
@@ -104,6 +106,20 @@
 		</string-array>
 	<!-- Spinner show motors -->
 	<string name="availableMotors">ALL MOTORS</string>
-
+	
+	<!-- Accesability text -->
+	<!-- Create Robot -->
+	<string name="ROBOTActionImage">Image which represents the "move" action of the robot</string>
+	
+	<!-- Main activity -->
+	<string name="new_char">Button for creating a new robot/actor</string>
+	<string name="new_acc">Button for creating a new action</string>
+	<string name="draw_obj">Button for creating an object (mobile or non mobile) into the play</string>
+	<string name="play">Button for begin to send the actions to the robots</string>
+	<string name="pausa">Button for stopping sending actions to the robots</string>
+	<string name="gear">Button for modifying the settings of the app</string>
+	
+	<!-- Create action -->
+	<string name="ACTIONTargetImage">Image which represent what kind of target is selected (scenario, object or robot)</string>
     
 </resources>

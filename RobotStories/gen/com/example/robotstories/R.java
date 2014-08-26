@@ -46,19 +46,28 @@ Spinner sizes for measures
         public static final int cells_robot_actions=0x7f020001;
         public static final int cells_sub_acts=0x7f020002;
         public static final int cross_red=0x7f020003;
-        public static final int default_image=0x7f020004;
-        public static final int gear=0x7f020005;
-        public static final int ic_launcher=0x7f020006;
-        public static final int mob_obj=0x7f020007;
-        public static final int newaccion=0x7f020008;
-        public static final int newactor=0x7f020009;
-        public static final int nonmob_obj=0x7f02000a;
-        public static final int pausa=0x7f02000b;
-        public static final int pencil=0x7f02000c;
-        public static final int play=0x7f02000d;
-        public static final int scenario=0x7f02000e;
-        public static final int zoom_in=0x7f02000f;
-        public static final int zoom_out=0x7f020010;
+        public static final int daughter=0x7f020004;
+        public static final int default_image=0x7f020005;
+        public static final int defaultactor=0x7f020006;
+        public static final int father=0x7f020007;
+        public static final int flecha_1=0x7f020008;
+        public static final int gear=0x7f020009;
+        public static final int grandma=0x7f02000a;
+        public static final int granpa=0x7f02000b;
+        public static final int ic_launcher=0x7f02000c;
+        public static final int icon=0x7f02000d;
+        public static final int mob_obj=0x7f02000e;
+        public static final int mother=0x7f02000f;
+        public static final int newaccion=0x7f020010;
+        public static final int newactor=0x7f020011;
+        public static final int nonmob_obj=0x7f020012;
+        public static final int pausa=0x7f020013;
+        public static final int pencil=0x7f020014;
+        public static final int play=0x7f020015;
+        public static final int scenario=0x7f020016;
+        public static final int son=0x7f020017;
+        public static final int zoom_in=0x7f020018;
+        public static final int zoom_out=0x7f020019;
     }
     public static final class id {
         public static final int ACTIONGVAll=0x7f090019;
@@ -92,6 +101,7 @@ Spinner sizes for measures
         public static final int AddRobot=0x7f090040;
         public static final int AddRule=0x7f090041;
         public static final int Begin=0x7f090044;
+        public static final int DEVICES=0x7f09005c;
         public static final int DataSize=0x7f090034;
         public static final int Description=0x7f09003c;
         public static final int EditDescription=0x7f09003b;
@@ -103,41 +113,47 @@ Spinner sizes for measures
         public static final int MAINRobots2=0x7f09000c;
         public static final int MAINactions=0x7f09000f;
         public static final int MAINscenario=0x7f09000b;
-        public static final int MOTORName=0x7f090057;
-        public static final int MOTORType=0x7f090058;
-        public static final int MOTORroot=0x7f090056;
+        public static final int MOTORName=0x7f09005e;
+        public static final int MOTORType=0x7f09005f;
+        public static final int MOTORroot=0x7f09005d;
         public static final int NamePlay=0x7f090033;
-        public static final int PICTURETable=0x7f090059;
-        public static final int PROPERTIESLayPower=0x7f09005a;
-        public static final int PROPERTIESPowerBar=0x7f09005c;
-        public static final int PROPERTIESPowerTV=0x7f09005b;
-        public static final int PROPERTIESSecond=0x7f09005e;
-        public static final int PROPERTIESSeekValue=0x7f09005d;
-        public static final int PROPERTIESTargetButton=0x7f09005f;
+        public static final int PICTURETable=0x7f090060;
+        public static final int PROPERTIESLayPower=0x7f090061;
+        public static final int PROPERTIESPowerBar=0x7f090063;
+        public static final int PROPERTIESPowerTV=0x7f090062;
+        public static final int PROPERTIESSecond=0x7f090065;
+        public static final int PROPERTIESSeekValue=0x7f090064;
+        public static final int PROPERTIESTargetButton=0x7f090066;
+        public static final int ROBOTAction=0x7f090052;
+        public static final int ROBOTActionImage=0x7f090054;
+        public static final int ROBOTActionLay=0x7f090050;
+        public static final int ROBOTActionName=0x7f090053;
         public static final int ROBOTHSize=0x7f09004b;
         public static final int ROBOTLayName=0x7f090046;
+        public static final int ROBOTLaySave=0x7f090055;
         public static final int ROBOTName=0x7f090048;
         public static final int ROBOTSize=0x7f090049;
-        public static final int ROBOTTableM=0x7f090052;
-        public static final int ROBOTTableS=0x7f090054;
+        public static final int ROBOTTableM=0x7f090058;
+        public static final int ROBOTTableS=0x7f09005a;
         public static final int ROBOTVSize=0x7f09004e;
-        public static final int RobotAddMotor=0x7f090053;
-        public static final int RobotAddSensor=0x7f090055;
-        public static final int RobotPic=0x7f090051;
-        public static final int RobotSave=0x7f090050;
+        public static final int ROBOTmachine=0x7f090051;
+        public static final int RobotAddMotor=0x7f090059;
+        public static final int RobotAddSensor=0x7f09005b;
+        public static final int RobotPic=0x7f090057;
+        public static final int RobotSave=0x7f090056;
         public static final int RobotTypeSize=0x7f09004c;
         public static final int RobotTypeSize2=0x7f09004f;
         public static final int RobotX=0x7f09004d;
-        public static final int SENSORName=0x7f090061;
-        public static final int SENSORType=0x7f090062;
-        public static final int SENSORroot=0x7f090060;
+        public static final int SENSORName=0x7f090068;
+        public static final int SENSORType=0x7f090069;
+        public static final int SENSORroot=0x7f090067;
         public static final int SetBack=0x7f090042;
         public static final int SizeScenario=0x7f090035;
-        public static final int TARGETMobObj=0x7f090066;
-        public static final int TARGETNonMobObj=0x7f090067;
-        public static final int TARGETRobot=0x7f090065;
-        public static final int TARGETScenario=0x7f090064;
-        public static final int TARGETroot=0x7f090063;
+        public static final int TARGETMobObj=0x7f09006d;
+        public static final int TARGETNonMobObj=0x7f09006e;
+        public static final int TARGETRobot=0x7f09006c;
+        public static final int TARGETScenario=0x7f09006b;
+        public static final int TARGETroot=0x7f09006a;
         public static final int TVDescription=0x7f09003d;
         public static final int TVNameAction=0x7f090012;
         public static final int TVNamePlay=0x7f090032;
@@ -171,39 +187,43 @@ Spinner sizes for measures
         public static final int create_action=0x7f030001;
         public static final int create_play=0x7f030002;
         public static final int create_robot=0x7f030003;
-        public static final int motor_dialog=0x7f030004;
-        public static final int picture_dialog=0x7f030005;
-        public static final int properties_layout=0x7f030006;
-        public static final int sensor_dialog=0x7f030007;
-        public static final int target_dialog=0x7f030008;
+        public static final int devices_dialog=0x7f030004;
+        public static final int motor_dialog=0x7f030005;
+        public static final int picture_dialog=0x7f030006;
+        public static final int properties_layout=0x7f030007;
+        public static final int sensor_dialog=0x7f030008;
+        public static final int target_dialog=0x7f030009;
     }
     public static final class string {
         public static final int AAction=0x7f040005;
+        /**  Create action 
+         */
+        public static final int ACTIONTargetImage=0x7f040031;
         public static final int ARobot=0x7f040006;
         public static final int ARule=0x7f040007;
-        public static final int ActionAll=0x7f040019;
-        public static final int ActionCommon=0x7f040018;
-        public static final int ActionCreated=0x7f04001b;
-        public static final int ActionPower=0x7f040016;
-        public static final int ActionPredefined=0x7f04001a;
-        public static final int ActionSave=0x7f040015;
-        public static final int ActionTarget=0x7f040017;
+        public static final int ActionAll=0x7f04001b;
+        public static final int ActionCommon=0x7f04001a;
+        public static final int ActionCreated=0x7f04001d;
+        public static final int ActionPower=0x7f040018;
+        public static final int ActionPredefined=0x7f04001c;
+        public static final int ActionSave=0x7f040017;
+        public static final int ActionTarget=0x7f040019;
         public static final int AddMotor=0x7f04000e;
         public static final int AddSensor=0x7f04000f;
         public static final int BeginThePlay=0x7f040009;
         public static final int Delete=0x7f04000a;
         public static final int DescriptionPlay=0x7f040003;
         public static final int LoadSandBox=0x7f040008;
-        public static final int MotorType=0x7f04001d;
+        public static final int MotorType=0x7f04001f;
         /**  CREATE ACTION 
          */
-        public static final int NameAction=0x7f040014;
+        public static final int NameAction=0x7f040016;
         /**  ADD MOTOR DIALOG 
          */
-        public static final int NameOfMotor=0x7f04001c;
+        public static final int NameOfMotor=0x7f04001e;
         /**  ADD SENSOR DIALOG 
          */
-        public static final int NameOfSensor=0x7f04001e;
+        public static final int NameOfSensor=0x7f040020;
         /**  Strings of create play 
          */
         public static final int NamePlay=0x7f040001;
@@ -212,35 +232,49 @@ Spinner sizes for measures
         public static final int NameRobot=0x7f04000b;
         /**  PROPERTIES DIALOG 
          */
-        public static final int PROPERTIESSave=0x7f040024;
+        public static final int PROPERTIESSave=0x7f040026;
+        /**  Accesability text 
+ Create Robot 
+         */
+        public static final int ROBOTActionImage=0x7f04002a;
         public static final int RobotSave=0x7f04000d;
         public static final int SBackgr=0x7f040004;
+        public static final int SelectMachine=0x7f040011;
         /**  COMMON VALUES 
  Select a picture 
          */
-        public static final int SelectPic=0x7f040025;
-        public static final int SensorType=0x7f04001f;
+        public static final int SelectPic=0x7f040027;
+        public static final int SensorType=0x7f040021;
+        public static final int SetActionMove=0x7f040010;
         public static final int SizeScenario=0x7f040002;
-        public static final int TARGETObjMob=0x7f040022;
-        public static final int TARGETObjNonMob=0x7f040023;
-        public static final int TARGETRobot=0x7f040021;
+        public static final int TARGETObjMob=0x7f040024;
+        public static final int TARGETObjNonMob=0x7f040025;
+        public static final int TARGETRobot=0x7f040023;
         /**  SELECT TARGET DIALOG 
          */
-        public static final int TARGETScenario=0x7f040020;
+        public static final int TARGETScenario=0x7f040022;
         public static final int TVSizeRobot=0x7f04000c;
         /**  horizontal "X" vertical 
          */
-        public static final int X=0x7f040026;
+        public static final int X=0x7f040028;
         public static final int app_name=0x7f040000;
         /**  Spinner show motors 
          */
-        public static final int availableMotors=0x7f040027;
+        public static final int availableMotors=0x7f040029;
+        public static final int draw_obj=0x7f04002d;
+        public static final int gear=0x7f040030;
         /**  Tables 
          */
-        public static final int motor=0x7f040010;
-        public static final int port=0x7f040013;
-        public static final int sensor=0x7f040011;
-        public static final int type=0x7f040012;
+        public static final int motor=0x7f040012;
+        public static final int new_acc=0x7f04002c;
+        /**  Main activity 
+         */
+        public static final int new_char=0x7f04002b;
+        public static final int pausa=0x7f04002f;
+        public static final int play=0x7f04002e;
+        public static final int port=0x7f040015;
+        public static final int sensor=0x7f040013;
+        public static final int type=0x7f040014;
     }
     public static final class style {
         /** 

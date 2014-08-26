@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:baselineAligned="false"
     android:id="@+id/create_robot"
  	android:weightSum="100"
  	android:orientation="horizontal"
@@ -51,15 +52,43 @@
 				    android:id="@+id/RobotTypeSize2" 
 				    android:layout_toRightOf="@+id/ROBOTVSize"/>
 			</RelativeLayout>
-			<!-- Rectangle ports -->
-
-			<!-- Buttons save and add picture -->
-			<LinearLayout 
-			    android:weightSum="100"
+			<!-- Action -->
+			<RelativeLayout android:id="@+id/ROBOTActionLay"
 			    android:orientation="horizontal"
 			    android:layout_width="fill_parent"
    				android:layout_height="match_parent"
+   				android:layout_above="@+id/ROBOTmachine"
 			    android:layout_below="@+id/ROBOTSize">
+			    <Button style = "@style/FONT" android:id="@+id/ROBOTAction"
+			        android:layout_width="wrap_content"
+					android:layout_height="fill_parent"
+					android:layout_alignParentLeft="true"
+					android:text="@string/SetActionMove"/>
+			    <TextView style = "@style/textViewCreateRobot" android:id="@+id/ROBOTActionName"
+			        android:layout_toRightOf="@+id/ROBOTAction"
+			        android:layout_toLeftOf="@+id/ROBOTActionImage"
+			        android:gravity="center_horizontal"
+			        android:textSize="24sp"/>
+			    <ImageView android:id="@+id/ROBOTActionImage"
+			        android:contentDescription="@string/ROBOTActionImage"
+			        android:layout_alignParentRight="true"
+			        android:layout_width="wrap_content"
+					android:layout_height="fill_parent"
+					android:layout_marginRight="10dp"/>
+			</RelativeLayout>
+			<!-- Find robot -->
+			<Button style = "@style/FONT" android:id="@+id/ROBOTmachine"
+			        android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:layout_above="@+id/ROBOTLaySave"
+					android:text="@string/SelectMachine"/>
+			<!-- Buttons save and add picture -->
+			<LinearLayout android:id="@+id/ROBOTLaySave"
+			    android:weightSum="100"
+			    android:orientation="horizontal"
+			    android:layout_width="fill_parent"
+   				android:layout_height="wrap_content"
+			    android:layout_alignParentBottom="true">
 			    <Button style = "@style/FONT"
 			        android:layout_width="0dp"
 					android:layout_height="fill_parent"
@@ -87,7 +116,7 @@
 				android:layout_height="0dp"
 				android:layout_weight="50">
 				<TableLayout 
-				    android:layout_height="fill_parent"
+				    android:layout_height="wrap_content"
 				    android:layout_width="fill_parent"
 				    android:id="@+id/ROBOTTableM">
 				    <TableRow>
@@ -128,7 +157,7 @@
 				android:layout_height="0dp"
 				android:layout_weight="50">
 				<TableLayout 
-				    android:layout_height="fill_parent"
+				    android:layout_height="wrap_content"
 				    android:layout_width="fill_parent"
 				    android:id="@+id/ROBOTTableS">
 				    <TableRow>

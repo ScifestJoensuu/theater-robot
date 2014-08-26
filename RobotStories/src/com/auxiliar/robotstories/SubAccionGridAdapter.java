@@ -18,15 +18,16 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 /**
- * This is the adapter of the gridlayout in which are included all the subactions of one action. 
- * The items are marcos (LinearLayout), in which can be fitted many subactions (dependindg on the number of ports of the robots)
- * all the actions of a macro begin at the same time (but not necesarily end at the same time), 
- * each action is represented graphically by a linearLayout containing a imageview in which there is 
- * the image of the action, and a TextView in which there is the name of the action
+ * <p>This is the adapter of the GridView in which are included all the subactions of one action. Appears on "create_action"</p>
+ * <p>The items are marcos (represented by a LinearLayout), in which can be fitted many subactions (depending on the number of ports of the robots)
+ * all the actions of a macro begin at the same time (but not necessarily end at the same time), each action is represented graphically by 
+ * another linearLayout containing a ImageView in which there is the image of the action, and a TextView in which there is the name of the action</p>
+ * <p>Next to the macro there is an ImageView in which we have put an arrow for esthetic reasons</p>
  * 
  * @author Arturo Gil
  *
  */
+@SuppressWarnings("deprecation")
 public class SubAccionGridAdapter extends BaseAdapter{
 
 	private Context mContext;
@@ -70,7 +71,9 @@ public class SubAccionGridAdapter extends BaseAdapter{
     	this.actions.add(new Accion [this.marcoSize]);
     }
     /**
-     * Add a new action in a macro, if the macro was empty adds a new macro
+     * <p>Add a new action in a macro (if the action was already in the macro, take it out from the macro before adding), 
+     * if the macro was empty adds a new macro. Depending on the number of motors this action will take one or more slots.</p>
+     * The additional actions can be added before or after, depending on the current space
      * 
      * @param macro macro where the action is added
      * @param position position inside the macro
@@ -82,9 +85,44 @@ public class SubAccionGridAdapter extends BaseAdapter{
     		if(this.actions.get(macro)[i]!=null)
     			i=this.marcoSize*2;
     	}
+    	/*Add macro if it is the first subaction on the macro*/
     	if(i==this.marcoSize)
     		this.AddMacro();
-    	this.actions.get(macro)[position]= add;
+    	/*Check if the action was already inside*/
+		for(i=0; i<this.marcoSize; i++){
+			Accion a = this.actions.get(macro)[i];
+			if(a!=null){
+				if(a.name.equals(add.name))
+					this.actions.get(macro)[i]=null;
+			}
+		}
+    	Accion old=this.actions.get(macro)[position];
+    	/*Make null all the action to be deleted*/
+    	if(old!=null){
+    		for(i=0; i<this.marcoSize; i++){
+    			Accion a = this.actions.get(macro)[i];
+    			if(a!=null){
+    				if(a.equals(old));
+    					this.actions.get(macro)[i]=null;
+    			}
+    		}
+    	}
+    	/*Check if we are going to add backwards or normal*/
+    	int numbSlots= add.motors.size();
+    	/*back*/
+    	if(position+numbSlots>this.marcoSize){
+	    	for(i=0; i< numbSlots; i++){
+	    		this.actions.get(macro)[position]= add;	
+	    		position--;
+	    	}
+    	}
+    	/*Normal*/
+    	else{
+	    	for(i=0; i< numbSlots; i++){
+	    		this.actions.get(macro)[position]= add;	
+	    		position++;
+	    	}
+    	}
     }
  
     public int getCount() {
@@ -106,10 +144,14 @@ public class SubAccionGridAdapter extends BaseAdapter{
  
     @SuppressLint("ResourceAsColor")
 	public View getView(int position, View convertView, ViewGroup parent) {
-    	LinearLayout objeto;
+    	LinearLayout actions, objeto;
         if (convertView == null) {
+        	actions = new LinearLayout(this.mContext);
+        	actions.setPadding(8, 8, 8, 8);
+        	actions.setOrientation(LinearLayout.VERTICAL);
+        	
         	objeto = new LinearLayout(this.mContext);
-    		objeto.setOrientation(LinearLayout.VERTICAL);
+        	objeto.setGravity(Gravity.CENTER_VERTICAL);
 
         	for(int i=0; i<this.marcoSize; i++){
             	TextView text;
@@ -135,25 +177,34 @@ public class SubAccionGridAdapter extends BaseAdapter{
                 /*Add to layout*/
                 sub.addView(imageView);
                 sub.addView(text);
-        		objeto.addView(sub);
+        		actions.addView(sub);
                 if(this.actions.get(position)[i]!=null){
 	                imageView.setImageResource( this.images.getIdImageByName (this.actions.get(position)[i].image));
 	                text.setText(this.actions.get(position)[i].name);
                 }
         	}
-            objeto.setTag(tag);
-            objeto.setId(position);
-            objeto.setPadding(8, 8, 8, 8);
+            actions.setTag(tag);
+            actions.setId(position);
+        	objeto.addView(actions);
+        	
+        	/*Let's put the arrow*/
+            ImageView imageView = new ImageView(mContext);
+            imageView.setLayoutParams(new GridView.LayoutParams(this.size, this.size));// ancho y alto
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setImageDrawable(this.images.resizeImage("flecha_1", this.size));
+            objeto.addView(imageView);
+            //imageView.setPadding(8, 8, 8, 8);
+        	
         } else {
             objeto = (LinearLayout) convertView;
-
+            actions= (LinearLayout) objeto.getChildAt(0);
         	for(int i=0; i<this.marcoSize; i++){
             	TextView text;
                 ImageView imageView;
-
-        		LinearLayout sub = (LinearLayout) objeto.getChildAt(i);
-                imageView= (ImageView) sub.getChildAt(0);
-                text= (TextView) sub.getChildAt(1);
+                
+        		LinearLayout action = (LinearLayout) actions.getChildAt(i);
+                imageView= (ImageView) action.getChildAt(0);
+                text= (TextView) action.getChildAt(1);
 
                 if(this.actions.get(position)[i]!=null){
 	                imageView.setImageResource( this.images.getIdImageByName (this.actions.get(position)[i].image));

@@ -29,8 +29,12 @@ public class Robot implements Serializable {
 	public String imageName;
 	public int HSize, VSize;
 	public ArrayList<Accion> actions;
+	/**The action performed when you move the robot through the scenario*/
+	public Accion moveAction;
 	public Motor motors[];
 	public Sensor sensors[];
+	
+	public String device;
 	
 	public Robot (){
 		this.motors = new Motor [Robot.MOTOR_PORTS];
@@ -41,7 +45,14 @@ public class Robot implements Serializable {
 	public void addAction (Accion a, int position){
 		this.actions.add(position, a);
 	}
+	/**
+	 * Remove an action in an specified position, if this position doesn't exist, it doesn't do nothing
+	 * 
+	 * @param position the position where the action will be deleted
+	 */
 	public void removeAccionAt (int position){
+		if(position >= this.actions.size())
+			return;
 		this.actions.remove(position);
 	}
 	/*FALTA POR COMENTAR*/
@@ -49,7 +60,7 @@ public class Robot implements Serializable {
 		if(pos<0 || pos>this.actions.size() || this.actions.contains(a)==false)
 			return false;
 		this.actions.remove(a);
-		if(pos==this.actions.size()){
+		if(pos>=this.actions.size()){
 			this.actions.add(a);
 			return true;
 		}
@@ -110,6 +121,21 @@ public class Robot implements Serializable {
 		}
 	}
 
+	/**
+	 * @param motor the motor we are going to check
+	 * @return the number of the port in which this motor is inside the robot (value inside the array+1). Returns -1 if it is not in the robot
+	 */
+	public int PortMotor(Motor motor){
+		for(int i=0; i<this.motors.length; i++){
+			Motor m= this.motors[i];
+			if(m!=null){
+				if(m.name.equals(motor.name))
+					return i+1;
+			}
+		}
+		return -1;
+	}
+	
 	public boolean setSensorInPort(Sensor s, int port) {
 		if(this.sensors[port-1]!=null)
 			return false;
@@ -125,5 +151,26 @@ public class Robot implements Serializable {
 				this.sensors[i]=null;
 			}
 		}	
+	}
+	
+	/**
+	 * @param sensor the sensor we are going to check
+	 * @return the number of the port in which this sensor is inside the robot (value inside the array+1). Returns -1 if it is not in the robot
+	 */
+	public int PortSensor(Sensor sensor){
+		for(int i=0; i<this.sensors.length; i++){
+			Sensor s= this.sensors[i];
+			if(s!=null){
+				if(s.name.equals(sensor.name))
+					return i;
+			}
+		}
+		return -1;
+	}
+
+
+	/*NOT IMPLEMENTED*/
+	public void executePrincipalAction(int x, int y) {
+		
 	}
 }
