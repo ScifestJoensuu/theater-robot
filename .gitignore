@@ -1,6 +1,8 @@
 Proxy/CMakeFiles
 Proxy/CMakeCache.txt
 Proxy/*~
+Proxy/Makefile
+Proxy/*.cmake
 
 *.class
 
