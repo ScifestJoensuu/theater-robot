@@ -1,0 +1,5 @@
+#include "BluetoothConnection.h"
+
+BluetoothConnection::connections() {
+  return 3;
+}

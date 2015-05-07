@@ -1,0 +1,7 @@
+#include "BluetoothConnection.h"
+
+class StageCorner
+{
+ public:
+  BluetoothConnection connection;
+};

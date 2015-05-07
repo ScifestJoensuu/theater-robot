@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/pi/robotstory/BluetoothConnection.cpp
+BluetoothConnection.h
+/home/pi/robotstory/BluetoothConnection.h
+
+/home/pi/robotstory/BluetoothConnection.h
+stdio.h
+-
+unistd.h
+-
+sys/socket.h
+-
+bluetooth/bluetooth.h
+-
+bluetooth/rfcomm.h
+-
+unistd.h
+-
+iostream
+-
+sstream
+-
+

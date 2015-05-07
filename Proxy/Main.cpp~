@@ -1,0 +1,25 @@
+#include <iostream>
+#include "MVision.h"
+//#include "BluetoothConnection.h"
+
+#include "BluetoothManager.h"
+//#include "Stage.h"
+
+using namespace std;
+
+MVision mvision;
+BluetoothManager btman;
+Stage stage;
+
+int main(int argc, char *argv[]) 
+{
+  cout << ">> Starting RobotStory" << endl;
+  int cam = 0;
+  cout << ">> Args: " << argc << endl;
+  if(argc == 2) cam = *argv[1] - '0';
+
+  //  mvision.init(cam);
+  //  cout << c.getStatus() << endl;
+  vector<BluetoothConnection*> devices = btman.scanDevices();
+  return 0;
+}

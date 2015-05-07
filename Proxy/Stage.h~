@@ -1,0 +1,30 @@
+#include <vector>
+#include "StageCorner.h"
+
+class Stage 
+{
+  int stageWidthCm;
+  int stageHeightCm;
+  int stageWidthPx;
+  int stageHeightPx;
+
+  StageCorner topLeft;
+  StageCorner topRight;
+  StageCorner bottomLeft;
+  StageCorner bottomRight;
+
+  void updateStage();
+ public:
+  Stage();
+  void setTopLeftCorner(StageCorner c);
+  void setTopRightCorner(StageCorner c);
+  void setBottomRightCorner(StageCorner c);
+  void setBottonLeftCorner(StageCorner c);
+  StageCorner getTopLeftCorner();
+  StageCorner getTopRightCorner();
+  StageCorner getBottomLeftCorner();
+  StageCorner getBottomRightCorner();
+  vector<StageCorner> getCorners();
+  int getXCm(int xPx);
+  int getYCm(int yPx);
+};
