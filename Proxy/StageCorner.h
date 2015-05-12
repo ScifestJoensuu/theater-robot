@@ -1,5 +1,5 @@
 #include "BluetoothConnection.h"
-
+//#include ""
 class StageCorner
 {
   int x;
@@ -12,5 +12,9 @@ class StageCorner
   BluetoothConnection* getBluetoothConnection();
   bool switchOn();
   bool switchOff();
-  
+  void setX(int x);
+  void setY(int y);
+  void setWithCvPoint(CvPoint p);
+  int getX();
+  int getY();
 };

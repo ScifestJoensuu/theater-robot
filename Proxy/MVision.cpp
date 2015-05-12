@@ -1,3 +1,4 @@
+
 #include "MVision.h"
 
 int threshold_value = 0;
@@ -26,13 +27,14 @@ calibrationResult testCalibration(CvCapture* cv_cap, int target_points);
 calibrationResult calibrate();
 calibrationResult calibrate(int target);
 vector<Point2f> detectCorners(IplImage* source);
-void correctPerspective(IplImage* source);
+IplImage* correctPerspective(IplImage* source);
 CvSeq* findCircles(IplImage* source);
 CvSeq* findCircles(int target_count);
 IplImage* processImage(IplImage* source);
 IplImage* getImage();
-void visualizeDetection(IplImage* source, CvSeq* detection);
+void visualizeDetection(IplImage* source, CvSeq* detection, string msg);
 CvPoint findCircle();
+//void findPointForCorner(StageCorner* corner);
 
 MVision::MVision() 
 {
@@ -79,17 +81,47 @@ int MVision::init(int camera)
   return 0;
 }
 
+void MVision::setTopLeft(CvPoint p)
+{
+	topLeft = p;
+}
+
+void MVision::setTopRight(CvPoint p)
+{
+	topRight = p;
+}
+
+void MVision::setBottomRight(CvPoint p)
+{
+	bottomRight = p;
+}
+
+void MVision::setBottomLeft(CvPoint p)
+{
+	bottomLeft = p;
+}
+
 bool MVision::showImage()
 {
   IplImage* tmp = cvQueryFrame(cv_cap);
   IplImage* bw = processImage(tmp);
   CvSeq* circles = findCircles(bw);
-  visualizeDetection(tmp, circles);
+  visualizeDetection(tmp, circles, "Detection");
   cvWaitKey(10);
   return true;
 }
 
-void visualizeDetection(IplImage* source, CvSeq* detection) 
+bool MVision::showSubImage()
+{
+  IplImage* tmp = getSubImage();
+  IplImage* bw = getProcessedSubImage();
+  CvSeq* circles = findCircles(bw);
+  visualizeDetection(tmp, circles, "SubImage");
+  cvWaitKey(10);
+  return true;
+}
+
+void visualizeDetection(IplImage* source, CvSeq* detection, string title)
 {
   for (int i = 0; i < detection->total; i++) {
     float *p = (float*)cvGetSeqElem(detection, i);
@@ -100,15 +132,15 @@ void visualizeDetection(IplImage* source, CvSeq* detection)
   }
   try 
     {
-      cvShowImage("Detection", source); // show frame
+      cvShowImage(title, source); // show frame
     }
   catch (...)
     {
-      cout << "Could not show image, exception: " << endl;
+      cout << "Could not show image '" << title << "', exception: " << endl;
     }
 }
 
-void correctPerspective(IplImage* source) 
+IplImg* correctPerspective(IplImage* source)
 {
   Mat src = cvarrToMat(source);
   // Define the destination image
@@ -134,12 +166,11 @@ void correctPerspective(IplImage* source)
     // Apply perspective transformation
     warpPerspective(src, quad, transmtx, quad.size());
     IplImage iplImg = quad;
-    try {
-      cvShowImage("quadrilateral", &iplImg);
-    } catch(...) {cout << "Could not display image" << endl;}
+    return iplImg;
   } else {
     cout << "Corner detection failed.." << endl;
   }
+  return NULL;
 }
 
 bool wayToSort(Point2f i, Point2f j) 
@@ -149,6 +180,12 @@ bool wayToSort(Point2f i, Point2f j)
 
 vector<Point2f> detectCorners(IplImage* source) 
 {
+	vector<Point2f> corners;
+	corners.push_back(Point2f(topLeft.x, topLeft.y));
+	corners.push_back(Point2f(topRightt.x, topRight.y));
+	corners.push_back(Point2f(bottomRight.x, bottomRight.y));
+	corners.push_back(Point2f(bottomLeft.x, bottomLeft.y));
+	/*
   CvSeq* circles = findCircles(source);
   
   vector<Point2f> corners;
@@ -166,19 +203,14 @@ vector<Point2f> detectCorners(IplImage* source)
     Point2f tr = tmp[0].x > tmp[1].x ? tmp[0] : tmp[1];
     Point2f bl = tmp[2].x > tmp[3].x ? tmp[3] : tmp[2];
     Point2f br = tmp[2].x > tmp[3].x ? tmp[2] : tmp[3];
-		
-    /*
-      cout << tl.x << ", " << tl.y << endl;
-      cout << tr.x << ", " << tr.y << endl;
-      cout << bl.x << ", " << bl.y << endl;
-      cout << br.x << ", " << br.y << endl;
-    */
+
 		
     corners.push_back(tl);
     corners.push_back(tr);
     corners.push_back(br);
     corners.push_back(bl);
   }
+*/
   return corners;
 }
 
@@ -293,7 +325,7 @@ calibrationResult testCalibration(CvCapture* cv_cap, int target_points)
     IplImage* processed = processImage(img);
     CvSeq* tmp = findCircles(processed);
     buffer.push_back(tmp);
-    visualizeDetection(img, tmp);
+    visualizeDetection(img, tmp, "calibration");
     if(tmp->total > target_points) {
       too_many++;
     } else if(tmp->total < target_points) {
@@ -334,6 +366,20 @@ IplImage* getImage()
   return processImage(cvQueryFrame(cv_cap));
 }
 
+IplImage* getSubImage()
+{
+	IplImage* img = cvQueryFrame(cv_cap);
+	img = correctPerspective(img);
+	return img;
+}
+
+IplImage* getProcessedSubImage()
+{
+	IplImage* img = getImage();
+	img = correctPerspective(img);
+	return img;
+}
+
 CvSeq* findCircles(IplImage* source) 
 {
   CvMemStorage* storage = cvCreateMemStorage(0);
@@ -365,11 +411,21 @@ CvPoint findCircle()
       y += p[1];
       i++;
     } else {
-      cout << "OP#(U¤=#)/¤(!" << endl;
+      cout << "..." << endl;
     }
   }
   return cvPoint(cvRound(x/i), cvRound(y/i));
 }
+
+/*
+CvPoint findPointForCorner(StageCorner* corner)
+{
+  CvPoint point = findCircle();
+  corner.setX(point.x);
+  corner.setY(point.y);
+  return point;
+}
+*/
 
 CvSeq* findCircles(int target_count) 
 {
@@ -381,3 +437,4 @@ CvSeq* findCircles(int target_count)
     return circles;
   }
 }
+

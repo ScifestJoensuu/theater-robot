@@ -3,10 +3,109 @@
 
 Stage::Stage()
 {
+  calibrated = false;
   topLeft = new StageCorner();
   topRight = new StageCorner();
   bottomLeft = new StageCorner();
   bottomRight = new StageCorner();
+}
+
+void Stage::setWidthCm(int width)
+{
+  stageWidthCm = width;
+  stageWidthPx = width;
+}
+
+void Stage::setHeightCm(int height)
+{
+  stageHeightCm = height;
+  stageHeightPx = height;
+}
+
+
+void calibrateStage()
+{
+  vector<BluetoothConnection*> devices = btman.scanDevices();
+  cout << "TL: " << stage.getTopLeftCorner()->getBluetoothConnection()->getAddress() << endl;
+  cout << "TR: " << stage.getTopRightCorner()->getBluetoothConnection()->getAddress() << endl;
+  cout << "BL: " << stage.getBottomLeftCorner()->getBluetoothConnection()->getAddress() << endl;
+  cout << "BR: " << stage.getBottomRightCorner()->getBluetoothConnection()->getAddress() << endl;
+
+  bool ok = stage.cornersOn();
+  if(!ok) {
+    cout << ">> Could not switch on corners, shutting down" << endl;
+    exit(0);
+  }
+
+  //showImage();
+
+  ok = stage.cornersOff();
+  for(int i = 0; i < 5; i++) {
+    ok = stage.cornerOn(stage.TOPLEFT);
+    sleep(1);
+    ok = stage.cornerOff(stage.TOPLEFT);
+    ok = stage.cornerOn(stage.TOPRIGHT);
+    sleep(1);
+    ok = stage.cornerOff(stage.TOPRIGHT);
+    ok = stage.cornerOn(stage.BOTTOMRIGHT);
+    sleep(1);
+    ok = stage.cornerOff(stage.BOTTOMRIGHT);
+    ok = stage.cornerOn(stage.BOTTOMLEFT);
+    sleep(1);
+    ok = stage.cornerOff(stage.BOTTOMLEFT);
+    //cout << "next.." << endl;
+    for(int j = 0; j < 3; j++) {
+      ok = stage.cornersOn();
+      sleep(1);
+      ok = stage.cornersOff();
+      sleep(1);
+    }
+  }
+  cout << ">>> Tests ready" << endl;
+  cout << ">> Finding corner coordinates for the stage.." << endl;
+
+  CvPoint = p;
+  stage.cornerOn(stage.TOPLEFT);
+  sleep(1);
+  p = mvision.findCirlce();
+  mvision.setTopLeft(p);
+  stage.getTopLeftCorner()->setWithCvPoint(p);
+  stage.cornersOff();
+  sleep(1);
+
+  stage.cornerOn(stage.TOPRIGHT);
+  sleep(1);
+  p = mvision.findCirlce();
+  mvision.setTopRight(p);
+  stage.getTopRightCorner()->setWithCvPoint(p);
+  stage.cornersOff();
+  sleep(1);
+
+  stage.cornerOn(stage.BOTTOMRIGHT);
+  sleep(1);
+  p = mvision.findCirlce();
+  mvision.setBottomRight(p);
+  stage.getBottomRightCorner()->setWithCvPoint(p);
+  stage.cornersOff();
+  sleep(1);
+
+  stage.cornerOn(stage.BOTTOMLEFT);
+  sleep(1);
+  p = mvision.findCirlce();
+  mvision.setBottomLeft(p);
+  stage.getBottomLeftCorner()->setWithCvPoint(p);
+  stage.cornersOff();
+  sleep(1);
+
+  cout << ">>> Finding coordinates ready" << endl;
+  stage.print();
+
+  stage.calibrated = true;
+
+  //  boolean ok = stage.cornerOn(stage.TOPLEFT);
+  //  mvision.findCircle();
+
+  cout << "Stage calibration ready" << endl;
 }
 
 bool Stage::cornersOn() 
@@ -120,4 +219,24 @@ StageCorner* Stage::getBottomLeftCorner()
 StageCorner* Stage::getBottomRightCorner()
 {
   return bottomRight;
+}
+
+/*
+void Stage::updateValues()
+{
+  if(!cornersOk()) return;
+  cout << "Corners ok.." << endl;
+  //  stageWidthPx = topRight->getX() - topLeft->getX();
+  //  stageHeightPx = 
+}
+*/
+
+void Stage::print()
+{
+  cout << "Stage width:  " << stageWidthCm << "cm, " << stageWidthPx << "px" << endl;
+  cout << "Stage height: " << stageHeightCm << "cm, " << stageHeightPx << "px" << endl;
+  cout << "Top left:     " << topLeft->getX() << " " << topLeft->getY() << endl;
+  cout << "Top right:    " << topRight->getX() << " " << topRight->getY() << endl;
+  cout << "Bottom right: " << bottomRight->getX() << " " << bottomRight->getY() << endl;
+  cout << "Bottom left:  " << bottomLeft->getX() << " " << bottomLeft->getY() << endl;
 }
