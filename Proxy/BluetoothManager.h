@@ -17,14 +17,8 @@ using namespace std;
 
 class BluetoothManager
 {
-  //  vector<BluetoothConnection*> corners;
-  Stage* stage;
-  vector<BluetoothConnection*> robots;
  public:
-  //  vector<Bluetooth
   vector<BluetoothConnection*> scanDevices();
-  void setStage(Stage* stage);
-  Stage* getStage();
 };
 
 #endif

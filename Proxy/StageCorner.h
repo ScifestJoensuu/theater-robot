@@ -2,8 +2,7 @@
 //#include ""
 class StageCorner
 {
-  int x;
-  int y;
+  StagePoint point;
   BluetoothConnection *connection;
  public:
   StageCorner();
@@ -12,9 +11,9 @@ class StageCorner
   BluetoothConnection* getBluetoothConnection();
   bool switchOn();
   bool switchOff();
-  void setX(int x);
-  void setY(int y);
+  void setPoint(StagePoint p);
   void setWithCvPoint(CvPoint p);
+  StagePoint getPoint();
   int getX();
   int getY();
 };

@@ -13,8 +13,28 @@ StageCorner::StageCorner(BluetoothConnection *bt)
 
 void StageCorner::setWithCvPoint(CvPoint p)
 {
-	x = p.x;
-	y = p.y;
+	point.x = p.x;
+	point.y = p.y;
+}
+
+void StageCorner::setPoint(StagePoint p)
+{
+	point = p;
+}
+
+StagePoint StageCorner::getPoint()
+{
+	return point;
+}
+
+int StageCorner::getX()
+{
+	return point.x;
+}
+
+int StageCorner::getY()
+{
+	return point.y;
 }
 
 void StageCorner::setBluetoothConnection(BluetoothConnection *bt)

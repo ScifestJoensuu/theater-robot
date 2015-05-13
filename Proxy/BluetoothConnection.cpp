@@ -9,8 +9,9 @@ BluetoothConnection::BluetoothConnection()
 {
 }
 
-BluetoothConnection::BluetoothConnection(string addr)
+BluetoothConnection::BluetoothConnection(string n, string addr)
 {
+	name = n;
   init(addr);
 }
 int BluetoothConnection::getStatus() 
@@ -140,4 +141,9 @@ string BluetoothConnection::buildMessage(string msg)
   stringstream stream;
   stream << "{" << msg_counter++ << ":" << msg << "}";
   return stream.str();;
+}
+
+string BluetoothConnection::getName()
+{
+	return name;
 }

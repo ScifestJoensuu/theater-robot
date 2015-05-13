@@ -1,13 +1,12 @@
 #include "BluetoothManager.h"
-int tries = 0;
+
+//int tries = 0;
 
 vector<BluetoothConnection*> BluetoothManager::scanDevices()
 {
-  tries++;
   cout << ">> Scanning bluetooth devices.." << endl;
   vector<BluetoothConnection*> devices;
-  //  BluetoothConnection device;
-  //  devices.push_back(device);
+
   inquiry_info *ii = NULL;
   int max_rsp, num_rsp;
   int dev_id, sock, len, flags;
@@ -40,29 +39,18 @@ vector<BluetoothConnection*> BluetoothManager::scanDevices()
     string startswith("Stage");
     string n = name;
     if(!n.compare(0, startswith.size(), startswith)) {
-      BluetoothConnection *tmp = new BluetoothConnection(addr);
+      BluetoothConnection *tmp = new BluetoothConnection(name, addr);
       devices.push_back(tmp);
-      if(strcmp(name, "StageCornerTL") == 0) {
-	//cout << "Found " << name << endl;
-	stage->getTopLeftCorner()->setBluetoothConnection(tmp);
-      } else if(strcmp(name, "StageCornerTR") == 0) {
-	//cout << "Found " << name << endl;
-	stage->getTopRightCorner()->setBluetoothConnection(tmp);
-      } else if(strcmp(name, "StageCornerBL") == 0) {
-	//cout << "Found " << name << endl;
-	stage->getBottomLeftCorner()->setBluetoothConnection(tmp);
-      } else if(strcmp(name, "StageCornerBR") == 0) {
-	//cout << "Found " << name << endl;
-	stage->getBottomRightCorner()->setBluetoothConnection(tmp);
-      }
     }
   }
   cout << ">> Found " << devices.size() << " bluetooth devices" << endl;
   free( ii );
   close( sock );
+  /*
   if(!stage->cornersOk()) {
     if(tries < 3) return scanDevices();
   }
+  */
   return devices;
 }
 

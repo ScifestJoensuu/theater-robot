@@ -23,9 +23,31 @@ void Stage::setHeightCm(int height)
 }
 
 
-void calibrateStage()
+void Stage::calibrateStage()
 {
-  vector<BluetoothConnection*> devices = btman.scanDevices();
+	for(int i = 0; i < 3; i++) {
+		vector<BluetoothConnection*> devices = btman.scanDevices();
+		for(vector<BluetoothConnection*>::iterator it = devices.begin(); it != devices.end(); ++it) {
+			/* std::cout << *it; ... */
+			BluetoothConnection* tmp = *it;
+			char* name = tmp->getName();
+			if(strcmp(name, "StageCornerTL") == 0) {
+				topLeft->setBluetoothConnection(tmp);
+			} else if(strcmp(name, "StageCornerTR") == 0) {
+				topRight->setBluetoothConnection(tmp);
+			} else if(strcmp(name, "StageCornerBL") == 0) {
+				bottomLeft->setBluetoothConnection(tmp);
+			} else if(strcmp(name, "StageCornerBR") == 0) {
+				bottomRight->setBluetoothConnection(tmp);
+			}
+		}
+		if(this->cornersOk()) break;
+	}
+	if(!cornersOk()) {
+		cout << ">> Did not find all of the corners, shutting down" << endl;
+		exit(0);
+	}
+
   cout << "TL: " << stage.getTopLeftCorner()->getBluetoothConnection()->getAddress() << endl;
   cout << "TR: " << stage.getTopRightCorner()->getBluetoothConnection()->getAddress() << endl;
   cout << "BL: " << stage.getBottomLeftCorner()->getBluetoothConnection()->getAddress() << endl;
@@ -64,12 +86,12 @@ void calibrateStage()
   cout << ">>> Tests ready" << endl;
   cout << ">> Finding corner coordinates for the stage.." << endl;
 
-  CvPoint = p;
+  CvPoint p;
   stage.cornerOn(stage.TOPLEFT);
   sleep(1);
   p = mvision.findCirlce();
   mvision.setTopLeft(p);
-  stage.getTopLeftCorner()->setWithCvPoint(p);
+  topLeft->setWithCvPoint(p);
   stage.cornersOff();
   sleep(1);
 
@@ -77,7 +99,7 @@ void calibrateStage()
   sleep(1);
   p = mvision.findCirlce();
   mvision.setTopRight(p);
-  stage.getTopRightCorner()->setWithCvPoint(p);
+  topRight->setWithCvPoint(p);
   stage.cornersOff();
   sleep(1);
 
@@ -85,7 +107,7 @@ void calibrateStage()
   sleep(1);
   p = mvision.findCirlce();
   mvision.setBottomRight(p);
-  stage.getBottomRightCorner()->setWithCvPoint(p);
+  bottomRight->setWithCvPoint(p);
   stage.cornersOff();
   sleep(1);
 
@@ -93,7 +115,7 @@ void calibrateStage()
   sleep(1);
   p = mvision.findCirlce();
   mvision.setBottomLeft(p);
-  stage.getBottomLeftCorner()->setWithCvPoint(p);
+  bottomLeft->setWithCvPoint(p);
   stage.cornersOff();
   sleep(1);
 

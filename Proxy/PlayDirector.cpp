@@ -5,6 +5,25 @@
  *      Author: mikko
  */
 
+#include "PlayDirector.h"
 
+void directRobotTo(Robot r);
+void dircetRobotTo(int x, int y);
 
+PlayDirector::PlayDirector()
+{}
 
+void PlayDirector::startSession(int connection)
+{
+
+}
+
+void directRobotTo(Robot r)
+{
+	// TODO
+}
+
+void directRobotTo(int x, int y)
+{
+	// TODO
+}

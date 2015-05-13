@@ -19,17 +19,19 @@ class BluetoothConnection
   int try_counter;
   int s;
   int status;
+  string name;
   string address;
   string buildMessage(string msg);
  public:
   BluetoothConnection();
-  BluetoothConnection(string addr);
+  BluetoothConnection(string name, string addr);
   int init(string addr);
   void initConnection();
   bool connectBluetooth();
   void closeConnection();
   int getStatus();
   string getAddress();
+  string getName();
   int sendMessage(string msg);
   bool sendMessageAndWaitForResponse(string msg);
   string readMessage();
