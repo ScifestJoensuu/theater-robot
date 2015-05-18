@@ -55,7 +55,7 @@ void Robot::setY(int y)
 	this->y = y;
 }
 
-void Robot::setCvPoint(CvPoint p)
+void Robot::setStagePoint(StagePoint p)
 {
 	this->x = p.x;
 	this->y = p.y;
@@ -71,7 +71,7 @@ int Robot::getY()
 	return y;
 }
 
-CvPoint Robot::getCvPoint()
+StagePoint Robot::getStagePoint()
 {
-	return CvPoint(x, y);
+	return StagePoint(x, y);
 }

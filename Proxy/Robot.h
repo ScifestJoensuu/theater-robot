@@ -9,6 +9,7 @@
 #define ROBOT_H_
 
 #include "BluetoothConnection.h"
+#include "StagePoint.h"
 
 using namespace std;
 
@@ -29,10 +30,10 @@ public:
 	BluetoothConnection* getBT();
 	void setX(int x);
 	void setY(int y);
-	void setCvPoint(CvPoint p);
+	void setStagePoint(StagePoint p);
 	int getX();
 	int getY();
-	CvPoint getCvPoint();
+	StagePoint getStagePoint();
 };
 
 

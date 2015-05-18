@@ -54,6 +54,7 @@ void Server::init(int port)
       }
 
    /* If connection is established then start communicating */
+   /*
    bzero(buffer,256);
    n = read( newsockfd,buffer,255 );
 
@@ -64,8 +65,9 @@ void Server::init(int port)
       }
 
    printf("Here is the message: %s\n",buffer);
-
+   */
    /* Write a response to the client */
+   /*
    n = write(newsockfd,"I got your message",18);
 
    if (n < 0)
@@ -73,6 +75,11 @@ void Server::init(int port)
       perror("ERROR writing to socket");
       exit(1);
       }
-
+   */
    //return 0;
+}
+
+int Server::waitForConnection()
+{
+  return 0;
 }

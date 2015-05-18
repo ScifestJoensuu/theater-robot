@@ -22,15 +22,24 @@ void Stage::setHeightCm(int height)
   stageHeightPx = height;
 }
 
+void Stage::setBluetoothManager(BluetoothManager* btm)
+{
+  btman = btm;
+}
+
+void Stage::setMVision(MVision* mv)
+{
+  mvision = mv;
+}
 
 void Stage::calibrateStage()
 {
 	for(int i = 0; i < 3; i++) {
-		vector<BluetoothConnection*> devices = btman.scanDevices();
+		vector<BluetoothConnection*> devices = btman->scanDevices();
 		for(vector<BluetoothConnection*>::iterator it = devices.begin(); it != devices.end(); ++it) {
 			/* std::cout << *it; ... */
 			BluetoothConnection* tmp = *it;
-			char* name = tmp->getName();
+			const char* name = tmp->getName().c_str();
 			if(strcmp(name, "StageCornerTL") == 0) {
 				topLeft->setBluetoothConnection(tmp);
 			} else if(strcmp(name, "StageCornerTR") == 0) {
@@ -48,12 +57,12 @@ void Stage::calibrateStage()
 		exit(0);
 	}
 
-  cout << "TL: " << stage.getTopLeftCorner()->getBluetoothConnection()->getAddress() << endl;
-  cout << "TR: " << stage.getTopRightCorner()->getBluetoothConnection()->getAddress() << endl;
-  cout << "BL: " << stage.getBottomLeftCorner()->getBluetoothConnection()->getAddress() << endl;
-  cout << "BR: " << stage.getBottomRightCorner()->getBluetoothConnection()->getAddress() << endl;
+  cout << "TL: " << topLeft->getBluetoothConnection()->getAddress() << endl;
+  cout << "TR: " << topRight->getBluetoothConnection()->getAddress() << endl;
+  cout << "BL: " << bottomLeft->getBluetoothConnection()->getAddress() << endl;
+  cout << "BR: " << bottomRight->getBluetoothConnection()->getAddress() << endl;
 
-  bool ok = stage.cornersOn();
+  bool ok = cornersOn();
   if(!ok) {
     cout << ">> Could not switch on corners, shutting down" << endl;
     exit(0);
@@ -61,25 +70,25 @@ void Stage::calibrateStage()
 
   //showImage();
 
-  ok = stage.cornersOff();
+  ok = cornersOff();
   for(int i = 0; i < 5; i++) {
-    ok = stage.cornerOn(stage.TOPLEFT);
+    ok = cornerOn(TOPLEFT);
     sleep(1);
-    ok = stage.cornerOff(stage.TOPLEFT);
-    ok = stage.cornerOn(stage.TOPRIGHT);
+    ok = cornerOff(TOPLEFT);
+    ok = cornerOn(TOPRIGHT);
     sleep(1);
-    ok = stage.cornerOff(stage.TOPRIGHT);
-    ok = stage.cornerOn(stage.BOTTOMRIGHT);
+    ok = cornerOff(TOPRIGHT);
+    ok = cornerOn(BOTTOMRIGHT);
     sleep(1);
-    ok = stage.cornerOff(stage.BOTTOMRIGHT);
-    ok = stage.cornerOn(stage.BOTTOMLEFT);
+    ok = cornerOff(BOTTOMRIGHT);
+    ok = cornerOn(BOTTOMLEFT);
     sleep(1);
-    ok = stage.cornerOff(stage.BOTTOMLEFT);
+    ok = cornerOff(BOTTOMLEFT);
     //cout << "next.." << endl;
     for(int j = 0; j < 3; j++) {
-      ok = stage.cornersOn();
+      ok = cornersOn();
       sleep(1);
-      ok = stage.cornersOff();
+      ok = cornersOff();
       sleep(1);
     }
   }
@@ -87,42 +96,42 @@ void Stage::calibrateStage()
   cout << ">> Finding corner coordinates for the stage.." << endl;
 
   CvPoint p;
-  stage.cornerOn(stage.TOPLEFT);
+  cornerOn(TOPLEFT);
   sleep(1);
-  p = mvision.findCirlce();
-  mvision.setTopLeft(p);
+  p = mvision->findCircle();
+  mvision->setTopLeft(p);
   topLeft->setWithCvPoint(p);
-  stage.cornersOff();
+  cornersOff();
   sleep(1);
 
-  stage.cornerOn(stage.TOPRIGHT);
+  cornerOn(TOPRIGHT);
   sleep(1);
-  p = mvision.findCirlce();
-  mvision.setTopRight(p);
+  p = mvision->findCircle();
+  mvision->setTopRight(p);
   topRight->setWithCvPoint(p);
-  stage.cornersOff();
+  cornersOff();
   sleep(1);
 
-  stage.cornerOn(stage.BOTTOMRIGHT);
+  cornerOn(BOTTOMRIGHT);
   sleep(1);
-  p = mvision.findCirlce();
-  mvision.setBottomRight(p);
+  p = mvision->findCircle();
+  mvision->setBottomRight(p);
   bottomRight->setWithCvPoint(p);
-  stage.cornersOff();
+  cornersOff();
   sleep(1);
 
-  stage.cornerOn(stage.BOTTOMLEFT);
+  cornerOn(BOTTOMLEFT);
   sleep(1);
-  p = mvision.findCirlce();
-  mvision.setBottomLeft(p);
+  p = mvision->findCircle();
+  mvision->setBottomLeft(p);
   bottomLeft->setWithCvPoint(p);
-  stage.cornersOff();
+  cornersOff();
   sleep(1);
 
   cout << ">>> Finding coordinates ready" << endl;
-  stage.print();
+  print();
 
-  stage.calibrated = true;
+  calibrated = true;
 
   //  boolean ok = stage.cornerOn(stage.TOPLEFT);
   //  mvision.findCircle();

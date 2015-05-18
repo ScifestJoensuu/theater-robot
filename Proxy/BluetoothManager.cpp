@@ -53,7 +53,7 @@ vector<BluetoothConnection*> BluetoothManager::scanDevices()
   */
   return devices;
 }
-
+/*
 void BluetoothManager::setStage(Stage* s) 
 {
   stage = s;
@@ -63,3 +63,4 @@ Stage* BluetoothManager::getStage()
 {
   return stage;
 }
+*/

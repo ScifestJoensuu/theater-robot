@@ -5,6 +5,7 @@
 #include "StagePoint.h"
 #include "StageCorner.h"
 #include "Robot.h"
+#include "BluetoothManager.h"
 
 class Stage 
 {
@@ -21,7 +22,8 @@ class Stage
   vector<Robot> robots;
 
   void updateStage();
-
+  BluetoothManager *btman;
+  MVision* mvision;
  public:
   bool calibrated;
 

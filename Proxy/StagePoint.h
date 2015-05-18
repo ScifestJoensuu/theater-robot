@@ -15,7 +15,7 @@ class StagePoint
 public:
 	int x;
 	int y;
-
+	StagePoint();
 	StagePoint(int x, int y);
 
 	/*

@@ -8,6 +8,8 @@
 
 #include "StagePoint.h"
 
+StagePoint::StagePoint()
+{}
 StagePoint::StagePoint(int x, int y)
 {
 	this->x = x;

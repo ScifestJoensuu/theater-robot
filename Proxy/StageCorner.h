@@ -1,4 +1,7 @@
 #include "BluetoothConnection.h"
+#include "MVision.h"
+#include "StagePoint.h"
+
 //#include ""
 class StageCorner
 {

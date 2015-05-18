@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
   stage.setBluetoothManager(&btman);
   stage.setMVision(&mvision);
 
-  stage.calibrateStage();
+  stage.calibrateStage();
 
   while(true) {
 	  server.init(port);
