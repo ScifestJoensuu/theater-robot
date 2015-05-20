@@ -10,13 +10,13 @@ StageCorner::StageCorner(BluetoothConnection *bt)
 {
   connection = bt;
 }
-
+/*
 void StageCorner::setWithCvPoint(CvPoint p)
 {
 	point.x = p.x;
 	point.y = p.y;
 }
-
+*/
 void StageCorner::setPoint(StagePoint p)
 {
 	point = p;

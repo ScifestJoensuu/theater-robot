@@ -8,6 +8,7 @@
 #ifndef STAGEPOINT_H_
 #define STAGEPOINT_H_
 
+using namespace std;
 
 class StagePoint
 {
@@ -15,9 +16,13 @@ class StagePoint
 public:
 	int x;
 	int y;
+	time_t timestamp;
 	StagePoint();
 	StagePoint(int x, int y);
 
+	int getAngle(StagePoint* p);
+	int getDistance(StagePoint* p);
+	time_t getTime();
 	/*
 	void setX(int x);
 	void setY(int y);

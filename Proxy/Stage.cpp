@@ -39,15 +39,21 @@ void Stage::calibrateStage()
 		for(vector<BluetoothConnection*>::iterator it = devices.begin(); it != devices.end(); ++it) {
 			/* std::cout << *it; ... */
 			BluetoothConnection* tmp = *it;
-			const char* name = tmp->getName().c_str();
-			if(strcmp(name, "StageCornerTL") == 0) {
+			string name = tmp->getName().c_str();
+			if(name.compare("StageCornerTL") == 0) {
 				topLeft->setBluetoothConnection(tmp);
-			} else if(strcmp(name, "StageCornerTR") == 0) {
+			} else if(name.compare("StageCornerTR") == 0) {
 				topRight->setBluetoothConnection(tmp);
-			} else if(strcmp(name, "StageCornerBL") == 0) {
+			} else if(name.compare("StageCornerBL") == 0) {
 				bottomLeft->setBluetoothConnection(tmp);
-			} else if(strcmp(name, "StageCornerBR") == 0) {
+			} else if(name.compare("StageCornerBR") == 0) {
 				bottomRight->setBluetoothConnection(tmp);
+			} else if(name.length() > 11 && name.compare(0, 11, "ActorRobot:") == 0) {
+				Robot* tmp_r = new Robot(tmp);
+				tmp_r->setId(name.substr(11, string::npos));
+				robots.push_back(tmp_r);
+
+				cout << ">> Found a robot: " << name << endl;
 			}
 		}
 		if(this->cornersOk()) break;
@@ -95,12 +101,12 @@ void Stage::calibrateStage()
   cout << ">>> Tests ready" << endl;
   cout << ">> Finding corner coordinates for the stage.." << endl;
 
-  CvPoint p;
+  StagePoint p;
   cornerOn(TOPLEFT);
   sleep(1);
   p = mvision->findCircle();
   mvision->setTopLeft(p);
-  topLeft->setWithCvPoint(p);
+  topLeft->setStagePoint(p);
   cornersOff();
   sleep(1);
 
@@ -108,7 +114,7 @@ void Stage::calibrateStage()
   sleep(1);
   p = mvision->findCircle();
   mvision->setTopRight(p);
-  topRight->setWithCvPoint(p);
+  topRight->setStagePoint(p);
   cornersOff();
   sleep(1);
 
@@ -116,7 +122,7 @@ void Stage::calibrateStage()
   sleep(1);
   p = mvision->findCircle();
   mvision->setBottomRight(p);
-  bottomRight->setWithCvPoint(p);
+  bottomRight->setStagePoint(p);
   cornersOff();
   sleep(1);
 
@@ -124,7 +130,7 @@ void Stage::calibrateStage()
   sleep(1);
   p = mvision->findCircle();
   mvision->setBottomLeft(p);
-  bottomLeft->setWithCvPoint(p);
+  bottomLeft->setStagePoint(p);
   cornersOff();
   sleep(1);
 
@@ -158,6 +164,46 @@ bool Stage::cornersOn()
     return ok;
   }
   return false;
+}
+
+bool Stage::robotAtPoint(string id, StagePoint* p)
+{
+	return robotAtPoint(getRobot(id), p);
+}
+
+bool Stage::robotAtPoint(Robot* r, StagePoint* p)
+{
+	if(r->getPosition().getDistance(p) <= 10) return true;
+	return false;
+}
+
+
+Robot* Stage::getRobot(string id)
+{
+	for(vector<Robot*>::iterator it = robots.begin(); it != robots.end(); ++it) {
+		Robot *tmp = *it;
+		if(tmp->getId().compare(id) == 0) {
+			return tmp;
+		}
+	}
+	return nullptr;
+}
+
+StagePoint Stage::findRobot(string id)
+{
+	return findRobot(getRobot(id));
+}
+StagePoint Stage::findRobot(Robot* r)
+{
+	if(r != nullptr) {
+		r->irOn();
+		StagePoint point = mvision->findCircle();
+		r->appendPosition(point);
+		r->irOff();
+		return point;
+	}
+
+	return NULL;
 }
 
 bool Stage::cornersOff()

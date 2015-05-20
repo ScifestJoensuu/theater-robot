@@ -19,7 +19,7 @@ class Stage
   StageCorner *bottomLeft;
   StageCorner *bottomRight;
 
-  vector<Robot> robots;
+  vector<Robot*> robots;
 
   void updateStage();
   BluetoothManager *btman;
@@ -54,6 +54,12 @@ class Stage
   StageCorner* getBottomLeftCorner();
   StageCorner* getBottomRightCorner();
   vector<StageCorner> getCorners();
+
+  StagePoint findRobot(string id);
+  StagePoint findRobot(Robot* r);
+  bool robotAtPoint(string id, StagePoint* p);
+  bool robotAtPoint(Robot* r, StagePoint* p);
+  Robot* getRobot(string id);
 
   bool cornersOn();
   bool cornerOn(int corner);

@@ -14,8 +14,8 @@ class StageCorner
   BluetoothConnection* getBluetoothConnection();
   bool switchOn();
   bool switchOff();
-  void setPoint(StagePoint p);
-  void setWithCvPoint(CvPoint p);
+  void setStagePoint(StagePoint p);
+  //void setWithCvPoint(CvPoint p);
   StagePoint getPoint();
   int getX();
   int getY();

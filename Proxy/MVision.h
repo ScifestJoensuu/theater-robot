@@ -6,6 +6,7 @@
 #include <iostream>
 //#include <imgproc.h>
 #include "opencv2/imgproc/imgproc.hpp"
+#include "StagePoint.h"
 
 using namespace cv;
 using namespace std;
@@ -18,10 +19,10 @@ struct calibrationResult
 
 class MVision
 {
-	CvPoint topLeft;
-	CvPoint topRight;
-	CvPoint bottomRight;
-	CvPoint bottomLeft;
+	StagePoint topLeft;
+	StagePoint topRight;
+	StagePoint bottomRight;
+	StagePoint bottomLeft;
 	vector<Point2f> detectCorners(IplImage* source);
 	IplImage* correctPerspective(IplImage* source, IplImage* target);
 
@@ -47,12 +48,12 @@ void visualizeDetection(IplImage* source, CvSeq* detection, string msg);
   int init(int camera);
   bool showImage();
   bool showSubImage();
-  CvPoint findCircle();
+  StagePoint findCircle();
   //void findPointForCorner(StageCorner* corner);
-  void setTopLeft(CvPoint p);
-  void setTopRight(CvPoint p);
-  void setBottomRight(CvPoint p);
-  void setBottomLeft(CvPoint p);
+  void setTopLeft(StagePoint p);
+  void setTopRight(StagePoint p);
+  void setBottomRight(StagePoint p);
+  void setBottomLeft(StagePoint p);
   //void setCalibrationPoints(vector<CvPoint> points);
 };
 

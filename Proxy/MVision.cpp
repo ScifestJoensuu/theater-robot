@@ -61,22 +61,22 @@ int MVision::init(int camera)
   return 0;
 }
 
-void MVision::setTopLeft(CvPoint p)
+void MVision::setTopLeft(StagePoint p)
 {
 	topLeft = p;
 }
 
-void MVision::setTopRight(CvPoint p)
+void MVision::setTopRight(StagePoint p)
 {
 	topRight = p;
 }
 
-void MVision::setBottomRight(CvPoint p)
+void MVision::setBottomRight(StagePoint p)
 {
 	bottomRight = p;
 }
 
-void MVision::setBottomLeft(CvPoint p)
+void MVision::setBottomLeft(StagePoint p)
 {
 	bottomLeft = p;
 }
@@ -379,7 +379,7 @@ CvSeq* MVision::findCircles(IplImage* source)
   return circles;
 }
 
-CvPoint MVision::findCircle() 
+StagePoint MVision::findCircle()
 {
   vector<CvPoint*> buffer;
   int i = 0;
@@ -398,7 +398,7 @@ CvPoint MVision::findCircle()
       cout << "..." << endl;
     }
   }
-  return cvPoint(cvRound(x/i), cvRound(y/i));
+  return StagePoint(cvRound(x/i), cvRound(y/i));
 }
 
 /*
