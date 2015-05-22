@@ -7,8 +7,11 @@
 #include "Robot.h"
 #include "BluetoothManager.h"
 
+using namespace std;
+
 class Stage 
 {
+  const static int no_such_robot = 1;
   int stageWidthCm;
   int stageHeightCm;
   int stageWidthPx;

@@ -204,7 +204,7 @@ StagePoint Stage::findRobot(Robot* r)
 		return point;
 	}
 
-	return NULL;
+	throw no_such_robot;
 }
 
 Robot::Color Stage::getColorForRobot()
@@ -214,8 +214,8 @@ Robot::Color Stage::getColorForRobot()
 		int g = rand() % 256;
 		int b = rand() % 256;
 		bool ok = true;
-		for(vector<Robot*>::iterator *it = robots.begin(); it != robots.end(); it++) {
-			Robot* tmp = it;
+		for(vector<Robot*>::iterator it = robots.begin(); it != robots.end(); it++) {
+			Robot* tmp = *it;
 			Robot::Color col = tmp->getColor();
 			if(col.r == r || col.g == g || col.b == b) {
 				ok = false;
@@ -298,10 +298,10 @@ bool Stage::cornerOff(int corner)
 
 bool Stage::cornersOk()
 {
-  if(topLeft->getBluetoothConnection()->getStatus() == -1) return false;
-  if(topRight->getBluetoothConnection()->getStatus() == -1) return false;
-  if(bottomLeft->getBluetoothConnection()->getStatus() == -1) return false;
-  if(bottomRight->getBluetoothConnection()->getStatus() == -1) return false;
+  if(topLeft == nullptr || topLeft->getBluetoothConnection()->getStatus() == -1) return false;
+  if(topRight == nullptr || topRight->getBluetoothConnection()->getStatus() == -1) return false;
+  if(bottomLeft == nullptr || bottomLeft->getBluetoothConnection()->getStatus() == -1) return false;
+  if(bottomRight == nullptr || bottomRight->getBluetoothConnection()->getStatus() == -1) return false;
   return true;
 }
 

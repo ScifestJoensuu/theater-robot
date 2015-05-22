@@ -124,15 +124,15 @@ bool Robot::stop()
 
 void Robot::appendPosition(StagePoint p)
 {
-	StagePoint* previous = positions.back();
+	StagePoint previous = positions.back();
 	positions.push_back(p);
-	vector<StagePoint*>::iterator it = iteratorFromCheckpoint();
+	vector<StagePoint>::iterator it = iteratorFromCheckpoint();
 	/*for(; it != positions.end(); it++) {
 
 	}*/
-	StagePoint* tmp = *it;
-	this->shortDir = previous->getAngle(&p);
-	this->dirFromCheckpoint = tmp->getAngle(&p);
+	StagePoint tmp = *it;
+	this->shortDir = previous.getAngle(&p);
+	this->dirFromCheckpoint = tmp.getAngle(&p);
 }
 
 void Robot::setCheckpoint()
@@ -160,13 +160,23 @@ int Robot::getDirectionFromCheckpoint()
 	return this->dirFromCheckpoint;
 }
 
-vector<StagePoint*>::iterator Robot::iteratorFromCheckpoint()
+Robot::Color Robot::getColor()
 {
-	if(checkpoint == NULL) return positions.begin();
-	vector<StagePoint*>::iterator it;
-	for(it = positions.end(); it != positions.begin(); --it) {
-		StagePoint* tmp = *it;
-		if(tmp->getTime() < checkpoint) {
+  return color;
+}
+
+void Robot::setColor(Robot::Color c)
+{
+  color = c;
+}
+
+vector<StagePoint>::iterator Robot::iteratorFromCheckpoint()
+{
+  //if(checkpoint* == nullptr) return positions.begin();
+  vector<StagePoint>::iterator it = positions.end();
+	for(; it != positions.begin(); --it) {
+		StagePoint tmp = *it;
+		if(tmp.getTime() < checkpoint) {
 			it++;
 			break;
 		}

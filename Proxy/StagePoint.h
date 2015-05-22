@@ -8,6 +8,9 @@
 #ifndef STAGEPOINT_H_
 #define STAGEPOINT_H_
 
+#include <ctime>
+#include <math.h>
+
 using namespace std;
 
 class StagePoint

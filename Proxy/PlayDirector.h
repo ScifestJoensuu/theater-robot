@@ -8,6 +8,7 @@
 #ifndef PLAYDIRECTOR_H_
 #define PLAYDIRECTOR_H_
 
+#include "Stage.h"
 #include "Robot.h"
 #include "Script.h"
 

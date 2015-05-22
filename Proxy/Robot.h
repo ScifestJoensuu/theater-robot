@@ -16,20 +16,9 @@ using namespace std;
 
 class Robot
 {
-	struct Color { int r; int g; int b;};
-	string id;
-	string name;
-	int dirFromCheckpoint;
-	int shortDir;
-	float speed;
-	time_t checkpoint;
-	Color color;
-	//int x;
-	//int y;
-	vector<StagePoint> positions;
-	BluetoothConnection* connection;
-	vector<StagePoint*>::iterator Robot::iteratorFromCheckpoint();
+
 public:
+	struct Color { int r; int g; int b;};
 	Robot();
 	Robot(BluetoothConnection* con);
 	void setId(string id);
@@ -63,6 +52,20 @@ public:
 	bool turnRight(int degree);
 	bool turnLeft(int degree);
 	bool stop();
+ private:
+	string id;
+	string name;
+	int dirFromCheckpoint;
+	int shortDir;
+	float speed;
+	time_t checkpoint;
+	Color color;
+	//int x;
+	//int y;
+	vector<StagePoint> positions;
+	BluetoothConnection* connection;
+	vector<StagePoint>::iterator iteratorFromCheckpoint();
+
 };
 
 

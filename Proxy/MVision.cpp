@@ -105,7 +105,7 @@ void MVision::visualizeStage(vector<Robot*> robots)
 {
 	IplImage* tmp = getSubImage();
 	for (vector<Robot*>::iterator i = robots.begin(); i != robots.end(); i++) {
-	    Robot *r = i;
+	    Robot* r = *i;
 	    CvPoint center = cvPoint(r->getPosition().x, r->getPosition().y);
 	    CvScalar val = cvGet2D(tmp, center.y, center.x);
 	    //if (val.val[0] < 1) continue;

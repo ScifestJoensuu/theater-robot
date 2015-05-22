@@ -25,9 +25,9 @@ void PlayDirector::startSession(int connection)
 void PlayDirector::test()
 {
 	script = new Script();
-	script->addCommand(ScriptCommand("1", ScriptCommand::DRIVE, ScriptCommand::POINT, 50, 50));
-	script->addCommand(ScriptCommand("1", ScriptCommand::DRIVE, ScriptCommand::POINT, 100, 100));
-	script->addCommand(ScriptCommand("1", ScriptCommand::DRIVE, ScriptCommand::POINT, 150, 50));
+	script->addCommand(new ScriptCommand("1", ScriptCommand::DRIVE, ScriptCommand::POINT, 50, 50));
+	script->addCommand(new ScriptCommand("1", ScriptCommand::DRIVE, ScriptCommand::POINT, 100, 100));
+	script->addCommand(new ScriptCommand("1", ScriptCommand::DRIVE, ScriptCommand::POINT, 150, 50));
 	executeScript();
 }
 
@@ -67,13 +67,13 @@ bool PlayDirector::directRobotTo(string robot_id, StagePoint p)
 	cout << ">> Directing robot to " << p.x << ", " << p.y << endl;
 	if(stage->robotAtPoint(robot_id, &p)) return true;
 	Robot* robot = stage->getRobot(robot_id);
-	StagePoint* robot_location = stage->findRobot(robot);
-	int distance = robot_location->getDistance(&p);
+	StagePoint robot_location = stage->findRobot(robot);
+	int distance = robot_location.getDistance(&p);
 	int robot_dir = robot->getShortDirection();
-	int target_dir = robot_location->getAngle(&p);
+	int target_dir = robot_location.getAngle(&p);
 	int dir_change = target_dir - robot_dir;
 
-	cout << ">>> Robot position:   " << robot_location->x << ", " << robot_location->y << endl;
+	cout << ">>> Robot position:   " << robot_location.x << ", " << robot_location.y << endl;
 	cout << ">>> Robot direction:  " << robot_dir << endl;
 	cout << ">>> Target direction: " << target_dir << endl;
 	cout << ">>> Direction change: " << dir_change << endl;
@@ -87,7 +87,7 @@ bool PlayDirector::directRobotTo(string robot_id, StagePoint p)
 
 	// wait
 
-	return directRobotTo(robot_id, StagePoint p);
+	return directRobotTo(robot_id, p);
 }
 
 bool PlayDirector::directRobotTo(string robot_id, string target_id)

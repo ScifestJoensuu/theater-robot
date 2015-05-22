@@ -10,19 +10,20 @@
 
 #include "ScriptCommand.h"
 #include <vector>
+#include <string>
 
 using namespace std;
 
 class Script
 {
-	string script;
+  string script_txt;
 	vector<ScriptCommand*>::iterator cmd_iterator;
-	vector<ScriptCommand> commands;
+	vector<ScriptCommand*> commands;
 public:
 	Script();
 	Script(string script);
 	void parseScriptFromString(string script);
-	void addCommand(ScriptCommand c);
+	void addCommand(ScriptCommand* c);
 	ScriptCommand* getNextCommand();
 };
 

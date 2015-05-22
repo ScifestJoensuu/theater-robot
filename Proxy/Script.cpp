@@ -9,7 +9,6 @@
 
 Script::Script()
 {
-
 }
 
 Script::Script(string script)
@@ -17,23 +16,23 @@ Script::Script(string script)
 	parseScriptFromString(script);
 }
 
-void Script::parseScriptFromString(string script)
+void Script::parseScriptFromString(string s)
 {
-	this->script = script;
+	script_txt = s;
 
 	// TODO...
 
 	this->cmd_iterator = this->commands.begin();
 }
 
-void Script::addCommand(ScriptCommand cmd)
+void Script::addCommand(ScriptCommand* cmd)
 {
 	this->commands.push_back(cmd);
 }
 
 ScriptCommand* Script::getNextCommand()
 {
-	if(cmd_iterator != this->commands.end())
+	if(this->cmd_iterator != this->commands.end())
 		return *cmd_iterator++;
 	else
 		return nullptr;

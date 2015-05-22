@@ -8,6 +8,8 @@
 #ifndef SCRIPTCOMMAND_H_
 #define SCRIPTCOMMAND_H_
 
+#include <string>
+
 using namespace std;
 
 class ScriptCommand

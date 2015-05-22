@@ -17,7 +17,7 @@ void StageCorner::setWithCvPoint(CvPoint p)
 	point.y = p.y;
 }
 */
-void StageCorner::setPoint(StagePoint p)
+void StageCorner::setStagePoint(StagePoint p)
 {
 	point = p;
 }

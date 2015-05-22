@@ -7,6 +7,7 @@
 //#include <imgproc.h>
 #include "opencv2/imgproc/imgproc.hpp"
 #include "StagePoint.h"
+#include "Robot.h"
 
 using namespace cv;
 using namespace std;
@@ -48,6 +49,7 @@ void visualizeDetection(IplImage* source, CvSeq* detection, string msg);
   int init(int camera);
   bool showImage();
   bool showSubImage();
+  void visualizeStage(vector<Robot*> robots);
   StagePoint findCircle();
   //void findPointForCorner(StageCorner* corner);
   void setTopLeft(StagePoint p);
