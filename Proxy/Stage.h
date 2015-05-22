@@ -24,6 +24,7 @@ class Stage
   void updateStage();
   BluetoothManager *btman;
   MVision* mvision;
+  Robot::Color getColorForRobot();
  public:
   bool calibrated;
 

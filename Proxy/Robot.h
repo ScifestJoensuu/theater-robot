@@ -16,12 +16,14 @@ using namespace std;
 
 class Robot
 {
+	struct Color { int r; int g; int b;};
 	string id;
 	string name;
 	int dirFromCheckpoint;
 	int shortDir;
 	float speed;
 	time_t checkpoint;
+	Color color;
 	//int x;
 	//int y;
 	vector<StagePoint> positions;
@@ -51,7 +53,8 @@ public:
 	void setCheckpoint();
 	void setCheckpoint(time_t t);
 	time_t getCheckpoint();
-
+	void setColor(Color c);
+	Color getColor();
 
 	bool driveForward();
 	bool driveForward(int time);

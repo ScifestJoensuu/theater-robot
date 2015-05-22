@@ -51,6 +51,7 @@ void Stage::calibrateStage()
 			} else if(name.length() > 11 && name.compare(0, 11, "ActorRobot:") == 0) {
 				Robot* tmp_r = new Robot(tmp);
 				tmp_r->setId(name.substr(11, string::npos));
+				tmp_r->setColor(getColorForRobot());
 				robots.push_back(tmp_r);
 
 				cout << ">> Found a robot: " << name << endl;
@@ -204,6 +205,32 @@ StagePoint Stage::findRobot(Robot* r)
 	}
 
 	return NULL;
+}
+
+Robot::Color Stage::getColorForRobot()
+{
+	while (true) {
+		int r = rand() % 256;
+		int g = rand() % 256;
+		int b = rand() % 256;
+		bool ok = true;
+		for(vector<Robot*>::iterator *it = robots.begin(); it != robots.end(); it++) {
+			Robot* tmp = it;
+			Robot::Color col = tmp->getColor();
+			if(col.r == r || col.g == g || col.b == b) {
+				ok = false;
+				break;
+			}
+		}
+
+		if(ok) {
+			Robot::Color c;
+			c.r = r;
+			c.g = g;
+			c.b = b;
+			return c;
+		}
+	}
 }
 
 bool Stage::cornersOff()

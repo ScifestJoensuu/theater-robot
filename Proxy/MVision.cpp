@@ -101,6 +101,19 @@ bool MVision::showSubImage()
   return true;
 }
 
+void MVision::visualizeStage(vector<Robot*> robots)
+{
+	IplImage* tmp = getSubImage();
+	for (vector<Robot*>::iterator i = robots.begin(); i != robots.end(); i++) {
+	    Robot *r = i;
+	    CvPoint center = cvPoint(r->getPosition().x, r->getPosition().y);
+	    CvScalar val = cvGet2D(tmp, center.y, center.x);
+	    //if (val.val[0] < 1) continue;
+	    cvCircle(tmp, center, 10, CV_RGB(r->getColor().r,r->getColor().g,r->getColor().b), 1, CV_AA, 0);
+	  }
+	cvShowImage("Stage", tmp);
+}
+
 void MVision::visualizeDetection(IplImage* source, CvSeq* detection, string title)
 {
   for (int i = 0; i < detection->total; i++) {
