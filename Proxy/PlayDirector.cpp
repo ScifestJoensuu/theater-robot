@@ -22,6 +22,11 @@ void PlayDirector::startSession(int connection)
 
 }
 
+void PlayDirector::setArduinoConnection(ArduinoConnection* c)
+{
+  ard = c;
+}
+
 void PlayDirector::test()
 {
 	script = new Script();
@@ -96,7 +101,7 @@ bool PlayDirector::directRobotTo(string robot_id, StagePoint p)
 	}
 	robot->driveForward();
 
-	thread send(sendRobotLocation, robot);
+	thread send(&PlayDirector::sendRobotLocation, this, robot);
 	//send.join();
 	// wait
 

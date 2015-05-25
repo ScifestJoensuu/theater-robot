@@ -14,8 +14,8 @@ ArduinoConnection::ArduinoConnection()
 
 ArduinoConnection::~ArduinoConnection()
 {
-	instream.close();
-	outstream.close();
+  instream.close();
+  outstream.close();
 }
 
 void ArduinoConnection::init()
@@ -26,27 +26,27 @@ void ArduinoConnection::init()
 void ArduinoConnection::init(string port)
 {
 	id = 0;
-	const char* sys = "stty -F " + port + " cs8 9600 ignbrk -brkint -icrnl -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echokenoflsh -ixon -crtscts";
-	system(sys);	//Activates the tty connection with the Arduino
+	string sys = "stty -F " + port + " cs8 9600 ignbrk -brkint -icrnl -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echokenoflsh -ixon -crtscts";
+	system(sys.c_str());	//Activates the tty connection with the Arduino
 
 	//ifstream Arduino_Input("/dev/ttyACM0");
-	instream = ifstream(port);
-	outstream = ofstream(port);
+	instream.open(port.c_str());
+	outstream.open(port.c_str());
 	//ofstream Arduino_Output("/dev/ttyACM0");
 }
 
 void ArduinoConnection::waitForConnection()
 {
 	char* data;
-	long int time = time(NULL);
+	long int t = time(nullptr);
 
-	while(time(NULL)-time < 5){}	//Wait five seconds for the Arduino to start up
+	while(time(nullptr)-t < 5){}	//Wait five seconds for the Arduino to start up
 
 	bool ok = false;
 	while(!ok)
 	{
-			time = time(NULL);
-			while(time(NULL)-time < 1){}	//wait one second to get good numbers into the Arduino stream
+			t = time(nullptr);
+			while(time(nullptr)-t < 1){}	//wait one second to get good numbers into the Arduino stream
 			while(!instream.eof())	//while the eof flage isn't set
 			{
 				instream >> data;
@@ -76,9 +76,14 @@ string ArduinoConnection::readMessage()
 	return data;
 }
 
+bool ArduinoConnection::sendMessage(string msg)
+{
+  outstream << msg;
+}
+
 bool ArduinoConnection::sendRobotLocation(Robot* r)
 {
-	string msg = "{[" + id + "]\"id\":\"" + r->getId() + "\",\"x\":\"" + r->getPosition().x + "\", \"y\":\"" + r->getPosition().y + "\"}";
+  string msg = "{[" + to_string(id) + "]\"id\":\"" + r->getId() + "\",\"x\":\"" + to_string(r->getPosition().x) + "\", \"y\":\"" + to_string(r->getPosition().y) + "\"}";
 	sendMessage(msg);
 	return waitForResponse(id);
 }

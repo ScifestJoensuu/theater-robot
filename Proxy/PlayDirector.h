@@ -11,7 +11,7 @@
 #include "Stage.h"
 #include "Robot.h"
 #include "Script.h"
-#include "ArduinoConnection.h";
+#include "ArduinoConnection.h"
 #include <thread>
 
 class PlayDirector
