@@ -190,6 +190,11 @@ Robot* Stage::getRobot(string id)
 	return nullptr;
 }
 
+vector<Robot*> Stage::getRobots()
+{
+	return this->robots;
+}
+
 StagePoint Stage::findRobot(string id)
 {
 	return findRobot(getRobot(id));

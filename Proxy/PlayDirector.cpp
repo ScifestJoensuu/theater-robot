@@ -41,6 +41,17 @@ void PlayDirector::executeScript()
 	cout << ">> Script ended" << endl;
 }
 
+void PlayDirector::executeScript(string s)
+{
+	Script* script = new Script(s);
+	cout << ">> Executing script.." << endl;
+	ScriptCommand *cmd;
+	while((cmd = script->getNextCommand()) != nullptr) {
+		executeCommand(cmd);
+	}
+	cout << ">> Script ended" << endl;
+}
+
 void PlayDirector::executeCommand(ScriptCommand *cmd)
 {
 	bool ok = false;
@@ -85,6 +96,8 @@ bool PlayDirector::directRobotTo(string robot_id, StagePoint p)
 	}
 	robot->driveForward();
 
+	thread send(sendRobotLocation, robot);
+	//send.join();
 	// wait
 
 	return directRobotTo(robot_id, p);
@@ -93,4 +106,25 @@ bool PlayDirector::directRobotTo(string robot_id, StagePoint p)
 bool PlayDirector::directRobotTo(string robot_id, string target_id)
 {
 
+}
+
+bool PlayDirector::sendRobotLocation(Robot* r) {
+	for(int i = 0; i < 5; i++) {
+		bool ok = ard->sendRobotLocation(r);
+		if(ok) return true;
+	}
+	cout << "!! Sending robot position failed.." << endl;
+	return false;
+}
+
+bool PlayDirector::sendAllRobotLocations() {
+	vector<Robot*> robots = stage->getRobots();
+	bool ok = true;
+	for(vector<Robot*>::iterator it = robots.begin(); it != robots.end(); it++)
+	{
+		Robot* r = *it;
+		bool tmp = sendRobotLocation(r);
+		if(ok) ok = tmp; // if ok == true, set ok to tmp (if false appears, it stays)
+	}
+	return ok;
 }

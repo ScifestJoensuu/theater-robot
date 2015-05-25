@@ -5,14 +5,16 @@
 #include "Server.h"
 #include "PlayDirector.h"
 #include <thread>
+#include "ArduinoConnection.h"
 
 using namespace std;
 
 MVision mvision;
 BluetoothManager btman;
-Server server;
+//Server server;
 Stage stage;
 PlayDirector director;
+ArduinoConnection con;
 
 void showImage();
 
@@ -39,10 +41,16 @@ int main(int argc, char *argv[])
 
   stage.calibrateStage();
 
+  con.init();
+  con.waitForConnection();
+  director.setArduinoConnection(&con);
+  director.sendAllRobotLocations();
   while(true) {
-	  server.init(port);
-	  int connection = server.waitForConnection();
-	  director.startSession(connection);
+	  //server.init(port);
+	  string script = con.receiveScript();
+	  cout << ">> Received a message: '" << script << "'" << endl;
+	  director.executeScript(script);
+	  //director.startSession(0);
   // server init
   // wait connections
   

@@ -64,6 +64,7 @@ class Stage
   bool robotAtPoint(string id, StagePoint* p);
   bool robotAtPoint(Robot* r, StagePoint* p);
   Robot* getRobot(string id);
+  vector<Robot*> getRobots();
 
   bool cornersOn();
   bool cornerOn(int corner);
