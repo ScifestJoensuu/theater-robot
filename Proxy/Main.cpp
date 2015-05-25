@@ -35,22 +35,20 @@ int main(int argc, char *argv[])
 
   thread mav(showImage);
 
-  //  cout << c.getStatus() << endl;
-  //btman.setStage(&stage);
   stage.setBluetoothManager(&btman);
   stage.setMVision(&mvision);
 
-  stage.calibrateStage();
+  //stage.calibrateStage();
 
   con.init();
-  con.waitForConnection();
+  //con.waitForConnection();
   director.setArduinoConnection(&con);
-  director.sendAllRobotLocations();
+  //director.sendAllRobotLocations();
   while(true) {
 	  //server.init(port);
 	  string script = con.receiveScript();
 	  cout << ">> Received a message: '" << script << "'" << endl;
-	  director.executeScript(script);
+	  //director.executeScript(script);
 	  //director.startSession(0);
   // server init
   // wait connections
