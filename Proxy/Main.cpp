@@ -44,19 +44,20 @@ int main(int argc, char *argv[])
   //con.waitForConnection();
   director.setArduinoConnection(&con);
   //director.sendAllRobotLocations();
+  //director.test();
   while(true) {
-	  //server.init(port);
-	  string script = con.receiveScript();
-	  cout << ">> Received a message: '" << script << "'" << endl;
-	  //director.executeScript(script);
-	  //director.startSession(0);
-  // server init
-  // wait connections
+    //server.init(port);
+    string script = con.receiveScript();
+    cout << ">> Received a message: '" << script << "'" << endl;
+    if(script.find("msg_rec_timeout") == string::npos)director.executeScript(script);
+    //director.startSession(0);
+    // server init
+    // wait connections
   
-  // receive destination
-  // guide robot
-	  int c = cvWaitKey(5);
-	  if(c == 27) exit(0);
+    // receive destination
+    // guide robot
+    int c = cvWaitKey(5);
+    if(c == 27) exit(0);
   }
   
   exiting = true;
@@ -71,7 +72,7 @@ void showImage()
     //cout << "thread.." << endl;
     mvision.showImage();
     if(stage.calibrated)
-    	mvision.showSubImage();
+      mvision.showSubImage();
     int c = cvWaitKey(5);
     if(c == 27) exit(0);
   }

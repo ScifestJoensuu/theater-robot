@@ -11,6 +11,8 @@
 #include "ScriptCommand.h"
 #include <vector>
 #include <string>
+#include <json/json.h>
+#include <iostream>
 
 using namespace std;
 
@@ -22,7 +24,7 @@ class Script
 public:
 	Script();
 	Script(string script);
-	void parseScriptFromString(string script);
+	bool parseScriptFromString(string script);
 	void addCommand(ScriptCommand* c);
 	ScriptCommand* getNextCommand();
 };

@@ -9,6 +9,7 @@
 #define SCRIPTCOMMAND_H_
 
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -26,6 +27,7 @@ public:
 
 	ScriptCommand(string rid, command_type ct, target_type tt, string tid);
 	ScriptCommand(string rid, command_type ct, target_type tt, int x, int y);
+	void print();
 };
 
 

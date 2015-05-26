@@ -13,28 +13,47 @@ Script::Script()
 
 Script::Script(string script)
 {
-	parseScriptFromString(script);
+  parseScriptFromString(script);
 }
 
-void Script::parseScriptFromString(string s)
+bool Script::parseScriptFromString(string s)
 {
-	script_txt = s;
+  script_txt = s;
+  cout << "Parsing script '" << s << "'"<< endl;
+  Json::StyledWriter sw;
+  Json::Reader reader;
+  Json::Value root;
+  bool ok = reader.parse(s.c_str(), root);
+  if(ok)
+    {
+      //cout << "Parse ok" << endl;
+      //      cout << atoi(root["x"].asString().c_str()) << endl;
+      ScriptCommand* cmd = new ScriptCommand(root["id"].asString(), 
+					     ScriptCommand::DRIVE, 
+					     ScriptCommand::POINT, 
+					     atoi(root["x"].asString().c_str()), 
+					     atoi(root["y"].asString().c_str()));
+	
+      cmd->print();
 
-	// TODO...
+      this->cmd_iterator = this->commands.begin();
+      return true;
+    }
+  cout << "Parsing FAILED" << endl;
+  return false;
 
-	this->cmd_iterator = this->commands.begin();
 }
 
 void Script::addCommand(ScriptCommand* cmd)
 {
-	this->commands.push_back(cmd);
+  this->commands.push_back(cmd);
 }
 
 ScriptCommand* Script::getNextCommand()
 {
-	if(this->cmd_iterator != this->commands.end())
-		return *cmd_iterator++;
-	else
-		return nullptr;
+  if(this->cmd_iterator != this->commands.end())
+    return *cmd_iterator++;
+  else
+    return nullptr;
 }
 
