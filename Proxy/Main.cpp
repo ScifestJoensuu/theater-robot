@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
   stage.setBluetoothManager(&btman);
   stage.setMVision(&mvision);
 
-  //stage.calibrateStage();
+  stage.calibrateStage();
 
   con.init();
   //con.waitForConnection();

@@ -76,7 +76,7 @@ void Stage::calibrateStage()
   }
 
   //showImage();
-
+  /*
   ok = cornersOff();
   for(int i = 0; i < 5; i++) {
     ok = cornerOn(TOPLEFT);
@@ -100,6 +100,7 @@ void Stage::calibrateStage()
     }
   }
   cout << ">>> Tests ready" << endl;
+  */
   cout << ">> Finding corner coordinates for the stage.." << endl;
 
   StagePoint p;
