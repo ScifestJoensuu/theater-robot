@@ -5,23 +5,31 @@ int threshold_value = 0;
 int threshold_type = 3;
 int const max_BINARY_value = 255;
 
-int bw_threshold = 240;
-int iratio = 3;
-int min_dist = 10;
+int bw_threshold = 250;
+int iratio = 2;
+int min_dist = 50;
 int cd_threshold = 150;
-int acc_threshold = 20;
+int acc_threshold = 18;
 int min_rad = 2;
 int max_rad = 20;
 
 CvCapture* cv_cap;
 
+IplImage* currentImage;
+IplImage* currentProcessed;
+
+struct sysinfo sinfo;
 
 MVision::MVision() 
 {
+
 }
 
 int MVision::init(int camera) 
 {
+  stageCalibrated = false;
+  calibrated = false;
+
   cout << ">> Initializing MVision-module" << endl;	
   cout << "OpenCV verision: " << CV_VERSION << endl;
   cout << "Using camera '" << camera << "'" << endl;
@@ -29,119 +37,226 @@ int MVision::init(int camera)
   int c;
   IplImage* color_img;
   cv_cap = cvCaptureFromCAM(camera);
-    
-  //calibrationResult result = calibrate(4);
-  //calibrationResult result =  calibrate();
-  //if(result.ok == 0) cout << "Calibration successful!" << endl;
-  //else cout << "Calibration failed.." << endl;
-  
-  /*    
-  for(;;) {
-  color_img = cvQueryFrame(cv_cap);
-  if(color_img != 0) {
-  //cvShowImage("Original", color_img);
-  
-  IplImage* im_bw = processImage(color_img);
-  //detectCorners(im_bw);
-  
-  //CvSeq* circles = findCircles(im_bw);
-  
-  //visualizeDetection(color_img, circles);
-  correctPerspective(im_bw);
-  
-  }
-  c = cvWaitKey(500);
-  if(c == 27)
-  break; // if ESC, break and quit
-  }
-  */
-  
 
-  //cvReleaseCapture(&cv_cap);
+  cvNamedWindow("Detection", CV_WINDOW_AUTOSIZE);
+  cvMoveWindow("Detection", 30, 30);
+  cvNamedWindow("Stage", CV_WINDOW_AUTOSIZE);
+  cvMoveWindow("Stage", 750, 30);
+
+    
   return 0;
 }
 
 void MVision::setTopLeft(StagePoint p)
 {
-	topLeft = p;
+  topLeft = p;
 }
 
 void MVision::setTopRight(StagePoint p)
 {
-	topRight = p;
+  topRight = p;
 }
 
 void MVision::setBottomRight(StagePoint p)
 {
-	bottomRight = p;
+  bottomRight = p;
 }
 
 void MVision::setBottomLeft(StagePoint p)
 {
-	bottomLeft = p;
+  bottomLeft = p;
+}
+
+void MVision::setStageWidth(int w)
+{
+  stageWidth = w;
+}
+
+void MVision::setStageHeight(int h)
+{
+  stageHeight =  h;
 }
 
 bool MVision::showImage()
 {
   IplImage* tmp = cvQueryFrame(cv_cap);
-  IplImage* bw = processImage(tmp);
-  CvSeq* circles = findCircles(bw);
+  IplImage* bw;
+
+  processImage(&tmp, &bw);
+  
+  CvMemStorage* storage = cvCreateMemStorage(0);  
+  CvSeq* circles = findCircles(bw, storage);
+  //  findCircles(bw, &circles);
+  
+  drawStage(tmp);
   visualizeDetection(tmp, circles, "Detection");
-  cvWaitKey(10);
+  
+  
+  cvShowImage("Detection", currentImage);
+
+  cvClearMemStorage(storage);
+  cvReleaseMemStorage(&storage);
+
+  cvReleaseImageHeader(&currentImage);
+  cvReleaseImageHeader(&tmp);
+  cvReleaseImage(&bw);
+
+  free(currentImage);
+  free(tmp);
+  free(bw);
+
+  //cvWaitKey(10);
+  
   return true;
 }
 
-bool MVision::showSubImage()
+void MVision::drawStage(IplImage* source)
 {
-  IplImage* tmp = getSubImage();
-  IplImage* bw = getProcessedSubImage();
-  CvSeq* circles = findCircles(bw);
-  visualizeDetection(tmp, circles, "SubImage");
-  cvWaitKey(10);
+  if(stageCalibrated) {
+    CvPoint tl = cvPoint(topLeft.x ,topLeft.y);
+    CvPoint tr = cvPoint(topRight.x ,topRight.y);
+    CvPoint bl = cvPoint(bottomLeft.x ,bottomLeft.y);
+    CvPoint br = cvPoint(bottomRight.x ,bottomRight.y);
+    cvCircle(source, tl, 10, CV_RGB(255,0,0), 1, CV_AA, 0);
+    cvCircle(source, tr, 10, CV_RGB(255,0,0), 1, CV_AA, 0);
+    cvCircle(source, bl, 10, CV_RGB(255,0,0), 1, CV_AA, 0);
+    cvCircle(source, br, 10, CV_RGB(255,0,0), 1, CV_AA, 0);
+    CvFont font;
+    cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, 0.5,0.5);  
+    cvPutText(source, "tl", cvPoint(tl.x+20, tl.y+5), &font, CV_RGB(255,0,0));
+    cvPutText(source, "tr", cvPoint(tr.x+20, tr.y+5), &font, CV_RGB(255,0,0));
+    cvPutText(source, "bl", cvPoint(bl.x+20, bl.y+5), &font, CV_RGB(255,0,0));
+    cvPutText(source, "br", cvPoint(br.x+20, br.y+5), &font, CV_RGB(255,0,0));
+  }
+}
+
+void MVision::setRobots(vector<Robot*> r)
+{
+  robots = r;
+}
+
+bool MVision::dismisImage()
+{
+  //cvDestroyWindow("Detection");
+  //cvReleaseImage(&currentImage);
+}
+
+void MVision::testi(IplImage* a, IplImage* b)
+{
+  a = b;
+}
+bool MVision::showStageImage()
+{
+  return false;
+  IplImage* tmp = cvQueryFrame(cv_cap);
+  IplImage* target;
+  correctPerspective(tmp, target);
   return true;
 }
 
-void MVision::visualizeStage(vector<Robot*> robots)
+void MVision::visualizeStage(IplImage* source, CvSeq* detection, string title)
 {
-	IplImage* tmp = getSubImage();
-	for (vector<Robot*>::iterator i = robots.begin(); i != robots.end(); i++) {
-	    Robot* r = *i;
-	    CvPoint center = cvPoint(r->getPosition().x, r->getPosition().y);
-	    CvScalar val = cvGet2D(tmp, center.y, center.x);
-	    //if (val.val[0] < 1) continue;
-	    cvCircle(tmp, center, 10, CV_RGB(r->getColor().r,r->getColor().g,r->getColor().b), 1, CV_AA, 0);
-	  }
-	cvShowImage("Stage", tmp);
-}
+  CvFont font;
+  cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, 0.5,0.5);  
+  if(detection->total == 0) {
+    cvPutText(source, "no points detected", cvPoint(10,20), &font, CV_RGB(0,255,0));
+  }
+  for(Robot* r: robots) {
+      if(r->getX() < 0 && r->getY() < 0) continue;
+      CvPoint p = cvPoint(r->getX(), r->getY());
+      Robot::Color c = r->getColor();
+      vector<StagePoint> positions = r->getPositions();
+      for(StagePoint point: positions) {
+	CvPoint cvpoint = cvPoint(point.x, point.y);
+	cvCircle(source, cvpoint, 2, CV_RGB(c.r, c.g, c.b), 1, CV_AA, 0);
+      }
+      StagePoint chk_sp = r->firstPointFromCheckpoint();
+      CvPoint chk_point = cvPoint(chk_sp.x + 5, chk_sp.y + 2);
+      CvPoint id_point = cvPoint(p.x+5, p.y+5);
+      cvPutText(source, "chk", chk_point, &font, CV_RGB(c.r,c.g,c.b));
+      cvPutText(source, r->getId().c_str(), id_point, &font, CV_RGB(c.r,c.g,c.b));
+      cvCircle(source, p, 10, CV_RGB(c.r, c.g, c.b), 1, CV_AA, 0);
+    }
 
-void MVision::visualizeDetection(IplImage* source, CvSeq* detection, string title)
-{
   for (int i = 0; i < detection->total; i++) {
     float *p = (float*)cvGetSeqElem(detection, i);
     CvPoint center = cvPoint(cvRound(p[0]),cvRound(p[1]));
     CvScalar val = cvGet2D(source, center.y, center.x);
-    //if (val.val[0] < 1) continue;
+    int x;
+    int y;
+    if(center.x > stageWidth/2) {
+      x = center.x - 90;
+    } else {
+      x = center.x + 20;
+    }
+    if(center.y > stageHeight/2) {
+      y = center.y - 5;
+    } else {
+      y = center.y + 10;
+    }
+    CvPoint txt_point = cvPoint(x, y);
+    string txt = (to_string(center.x) + ", " + to_string(center.y));
+
     cvCircle(source, center, cvRound(p[2]+5), CV_RGB(0,255,0), 1, CV_AA, 0);
+    cvPutText(source, txt.c_str(), txt_point, &font, CV_RGB(0,255,0));
   }
-  try 
-    {
-      cvShowImage("visual", source); // show frame
+  // currentImage = source;
+  /*
+  IplImage* tmp;
+  getStageImage(tmp);
+  for (vector<Robot*>::iterator i = robots.begin(); i != robots.end(); i++) {
+    Robot* r = *i;
+    CvPoint center = cvPoint(r->getPosition().x, r->getPosition().y);
+    CvScalar val = cvGet2D(tmp, center.y, center.x);
+    cvCircle(tmp, center, 10, CV_RGB(r->getColor().r,r->getColor().g,r->getColor().b), 1, CV_AA, 0);
+  }
+  cvShowImage("Stage", tmp);
+  */
+}
+
+void MVision::visualizeDetection(IplImage* source, CvSeq* detection, string title)
+{
+  sysinfo(&sinfo);
+  //  long long virtualMemUsed = sinfo.totalram - sinfo.freeram;
+  CvFont font;
+  cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, 0.5,0.5);  
+  cvPutText(source, ("free ram: " + to_string(sinfo.freeram/1000000)).c_str(), cvPoint(10,20), &font, CV_RGB(0,255,0));
+  if(detection->total == 0) {
+    cvPutText(source, "no points detected", cvPoint(10,40), &font, CV_RGB(0,255,0));
+  }
+  for (int i = 0; i < detection->total; i++) {
+    float *p = (float*)cvGetSeqElem(detection, i);
+    CvPoint center = cvPoint(cvRound(p[0]),cvRound(p[1]));
+    CvScalar val = cvGet2D(source, center.y, center.x);
+    int x;
+    int y;
+    if(center.x > stageWidth/2) {
+      x = center.x - 90;
+    } else {
+      x = center.x + 20;
     }
-  catch (...)
-    {
-      cout << "Could not show image '" << title << "', exception: " << endl;
+    if(center.y > stageHeight/2) {
+      y = center.y - 5;
+    } else {
+      y = center.y + 10;
     }
+    CvPoint txt_point = cvPoint(x, y);
+    string txt = (to_string(center.x) + ", " + to_string(center.y));
+
+    cvCircle(source, center, cvRound(p[2]+5), CV_RGB(0,255,0), 1, CV_AA, 0);
+    cvPutText(source, txt.c_str(), txt_point, &font, CV_RGB(0,255,0));
+  }
+  currentImage = source;
 }
 
 
 IplImage* MVision::correctPerspective(IplImage* source, IplImage* target)
 {
+  cout << "Correcting perspective" << endl;
   Mat src = cvarrToMat(source);
-  // Define the destination image
-  Mat quad = Mat::zeros(src.rows, src.cols, CV_8UC3);
-  
-  vector<Point2f> corners = detectCorners(source);
-  
+  Mat quad = Mat::zeros(stageHeight, stageWidth, CV_8UC3);  
+  vector<Point2f> corners = detectCorners();
+
   if(corners.size() == 4) {
     // Corners of the destination image
     std::vector<cv::Point2f> quad_pts;
@@ -153,19 +268,17 @@ IplImage* MVision::correctPerspective(IplImage* source, IplImage* target)
     // Get transformation matrix
     Mat transmtx = getPerspectiveTransform(corners, quad_pts);
     
-    //const IplImage* tst(source);
-    //Mat(const IplImage* img, bool copyData=false);
-    //Mat src(tst, true);
-    
     // Apply perspective transformation
     warpPerspective(src, quad, transmtx, quad.size());
-    IplImage iplImg = quad;
-    target = &iplImg;
-    return target;
+    IplImage t = quad;
+    cout << "Perspectice corrected.. " << endl;
+    
+    currentCorrected = &t;
+    return currentCorrected;
   } else {
     cout << "Corner detection failed.." << endl;
   }
-  return NULL;
+  return nullptr;
 }
 
 bool wayToSort(Point2f i, Point2f j) 
@@ -173,66 +286,30 @@ bool wayToSort(Point2f i, Point2f j)
   return i.y < j.y; 
 }
 
-vector<Point2f> MVision::detectCorners(IplImage* source) 
+vector<Point2f> MVision::detectCorners() 
 {
-	vector<Point2f> corners;
-	corners.push_back(Point2f(topLeft.x, topLeft.y));
-	corners.push_back(Point2f(topRight.x, topRight.y));
-	corners.push_back(Point2f(bottomRight.x, bottomRight.y));
-	corners.push_back(Point2f(bottomLeft.x, bottomLeft.y));
-	/*
-  CvSeq* circles = findCircles(source);
-  
   vector<Point2f> corners;
-  
-  if(circles->total == 4) {
-    vector<Point2f> tmp;
-    for(int i = 0; i < circles->total; i++) {
-      float *p = (float*)cvGetSeqElem(circles, i);
-      CvPoint point = cvPoint(cvRound(p[0]),cvRound(p[1]));
-      tmp.push_back(Point2f(point.x, point.y));
-    }
-    sort(tmp.begin(), tmp.end(), wayToSort);
-    
-    Point2f tl = tmp[0].x > tmp[1].x ? tmp[1] : tmp[0];
-    Point2f tr = tmp[0].x > tmp[1].x ? tmp[0] : tmp[1];
-    Point2f bl = tmp[2].x > tmp[3].x ? tmp[3] : tmp[2];
-    Point2f br = tmp[2].x > tmp[3].x ? tmp[2] : tmp[3];
-
-		
-    corners.push_back(tl);
-    corners.push_back(tr);
-    corners.push_back(br);
-    corners.push_back(bl);
-  }
-*/
+  corners.push_back(Point2f(topLeft.x, topLeft.y));
+  corners.push_back(Point2f(topRight.x, topRight.y));
+  corners.push_back(Point2f(bottomRight.x, bottomRight.y));
+  corners.push_back(Point2f(bottomLeft.x, bottomLeft.y));
   return corners;
 }
 
-IplImage* MVision::processImage(IplImage* source) 
+IplImage* MVision::processImage(IplImage** source, IplImage** target) 
 {
-  IplImage *im_gray = cvCreateImage(cvGetSize(source),IPL_DEPTH_8U,1);
-  cvCvtColor(source, im_gray, CV_RGB2GRAY);
+  IplImage *im_gray = cvCreateImage(cvGetSize(*source),IPL_DEPTH_8U,1);
+  cvCvtColor(*source, im_gray, CV_RGB2GRAY);
+  *target = cvCreateImage(cvGetSize(im_gray),IPL_DEPTH_8U,1);
+  cvThreshold(im_gray, *target, bw_threshold, 255, 3);
+
+  cvDilate(*target, *target, NULL, 4);
+  cvErode(*target, *target, NULL, 2);
+
+  cvReleaseImage(&im_gray);
+  free(im_gray);
   
-  //cvSmooth( im_gray, im_gray, CV_GAUSSIAN, 3, 3, 0, 0 );
-  //cvShowImage("Gray", im_gray);
-  
-  IplImage* im_bw = cvCreateImage(cvGetSize(im_gray),IPL_DEPTH_8U,1);
-  cvThreshold(im_gray, im_bw, bw_threshold, 255, 3);
-  
-  //int morph_size = 2;
-  //Mat element = getStructuringElement( MORPH_RECT, Size( 2*morph_size + 1, 2*morph_size+1 ), Point( morph_size, morph_size ) );
-  //morphologyEx( im_bw, im_bw, MORPH_OPEN, element );
-  
-  cvDilate(im_bw, im_bw, NULL, 3);
-  cvErode(im_bw, im_bw, NULL, 2);
-  
-  //correctPerspective(im_bw);
-  //cvSmooth( im_bw, im_bw, CV_GAUSSIAN, 3, 3, 0, 0 );
-  //try {
-  //  cvShowImage("BW", im_bw);
-  //} catch(...) {cout << "Could not display image" << endl;}
-  return im_bw;
+  return *target;
 }
 
 calibrationResult MVision::calibrate() 
@@ -281,18 +358,22 @@ calibrationResult MVision::calibrate(int target_points)
       }
     
     tries++;
-    //printDetectionParameters();
+    printDetectionParameters();
     cvWaitKey(10);
   } while(ok == 0);
   
   cout << endl <<  "Calibration ended, status: " << ok << endl;
-  cout << "Found corners:" << endl;
-  for(int i = 0; i < result.circles->total; i++) {
+
+  /*
+    cout << "Found corners:" << endl;
+    for(int i = 0; i < result.circles->total; i++) {
     float *p = (float*)cvGetSeqElem(result.circles, i);
     CvPoint center = cvPoint(cvRound(p[0]),cvRound(p[1]));
     cout << i << ": " << center.x << ", " << center.y << endl;
-  }
-  
+    }
+  */
+
+  calibrated = result.ok;
   return result;
 }
 
@@ -314,19 +395,29 @@ calibrationResult MVision::testCalibration(CvCapture* cv_cap, int target_points)
   result.ok = 0;
   int too_many = 0;
   int too_few = 0;
-  for(int i = 0; i < 10; i++) {
-    //cout << ".";
+  int count = 0;
+  while(count < 5) {
     IplImage* img = cvQueryFrame(cv_cap);
-    IplImage* processed = processImage(img);
-    CvSeq* tmp = findCircles(processed);
-    buffer.push_back(tmp);
+    IplImage* processed;
+    processImage(&img, &processed);
+    
+    CvMemStorage* storage = cvCreateMemStorage(0);
+    CvSeq* tmp = findCircles(processed, storage);
+    if(tmp != nullptr) {
+      buffer.push_back(tmp);
+      count++;
+    }
     visualizeDetection(img, tmp, "calibration");
+    
+    cvClearMemStorage(storage);
+    cvReleaseMemStorage(&storage);
+
     if(tmp->total > target_points) {
       too_many++;
     } else if(tmp->total < target_points) {
       too_few++;
     }
-    cvWaitKey(100);
+    cvWaitKey(10);
   }
   
   if(too_many >= 2 && too_many > too_few) {
@@ -352,35 +443,43 @@ calibrationResult MVision::testCalibration(CvCapture* cv_cap, int target_points)
   }
   x = cvRound(x / i);
   y = cvRound(y / i);
-  cout << ">>> Averages -> x: " << x << " - y: " << y << endl;
+  //cout << ">>> Averages -> x: " << x << " - y: " << y << endl;
   return result;
 }
 
 IplImage* MVision::getImage() 
 {
-  return processImage(cvQueryFrame(cv_cap));
+  IplImage* tmp;
+  IplImage* source = cvQueryFrame(cv_cap);
+  return processImage(&source, &tmp);
 }
 
-IplImage* MVision::getSubImage()
+IplImage* MVision::getStageImage(IplImage* cor)
 {
-	IplImage* img = cvQueryFrame(cv_cap);
-	IplImage* cor;
-	img = correctPerspective(img, cor);
-	return cor;
+  return new IplImage();
 }
 
-IplImage* MVision::getProcessedSubImage()
+IplImage* MVision::getProcessedStageImage()
 {
-	IplImage* img = getImage();
-	IplImage* cor;
-	img = correctPerspective(img, cor);
-	return cor;
+  IplImage* img = getImage();
+  IplImage* cor;
+  correctPerspective(img, cor);
+  return cor;
 }
 
-CvSeq* MVision::findCircles(IplImage* source) 
+void MVision::findCircles(IplImage* source, CvSeq** seq, CvMemStorage* storage)
 {
-  CvMemStorage* storage = cvCreateMemStorage(0);
-  //cvThreshold( color_img, dst, threshold_value, max_BINARY_value,threshold_type );
+  *seq = cvHoughCircles(source, storage, CV_HOUGH_GRADIENT,
+				  iratio,      // inverse ratio of the accumulator resolution
+				  min_dist,      // minimum distance between circle centres
+				  cd_threshold,    // higher threshold value for Canny
+				  acc_threshold,     // accumulator threshold for the circle centers; smaller->more false circles
+				  min_rad,  // minimum radius
+				  max_rad);   // maximum radius
+}
+
+CvSeq* MVision::findCircles(IplImage* source, CvMemStorage* storage) 
+{
   CvSeq* circles = cvHoughCircles(source, storage, CV_HOUGH_GRADIENT,
 				  iratio,      // inverse ratio of the accumulator resolution
 				  min_dist,      // minimum distance between circle centres
@@ -388,7 +487,8 @@ CvSeq* MVision::findCircles(IplImage* source)
 				  acc_threshold,     // accumulator threshold for the circle centers; smaller->more false circles
 				  min_rad,  // minimum radius
 				  max_rad);   // maximum radius
-  //cout << "Found circles: " << circles->total << endl;
+  //  cvClearMemStorage(storage);
+  //cvReleaseMemStorage(&storage);
   return circles;
 }
 
@@ -414,23 +514,155 @@ StagePoint MVision::findCircle()
   return StagePoint(cvRound(x/i), cvRound(y/i));
 }
 
-/*
-CvPoint findPointForCorner(StageCorner* corner)
+StagePoint MVision::findCircleFromStage()
 {
-  CvPoint point = findCircle();
-  corner.setX(point.x);
-  corner.setY(point.y);
-  return point;
+  return findCircleFromStage(0);
 }
-*/
+StagePoint MVision::findCircleFromStage(int tries)
+{
+  IplImage* source = cvQueryFrame(cv_cap);
+  Mat src = cvarrToMat(source);
+  Mat quad = Mat::zeros(stageHeight, stageWidth, CV_8UC3);
+  
+  vector<Point2f> corners = detectCorners();
+
+  if(corners.size() == 4) {
+    // Corners of the destination image
+    std::vector<cv::Point2f> quad_pts;
+    quad_pts.push_back(cv::Point2f(0, 0));
+    quad_pts.push_back(cv::Point2f(quad.cols, 0));
+    quad_pts.push_back(cv::Point2f(quad.cols, quad.rows));
+    quad_pts.push_back(cv::Point2f(0, quad.rows));
+    
+    // Get transformation matrix
+    Mat transmtx = getPerspectiveTransform(corners, quad_pts);
+    
+    // Apply perspective transformation
+    warpPerspective(src, quad, transmtx, quad.size());
+
+    IplImage corrected = quad;
+    
+    //cout << "Perspectice corrected.. " << endl;
+    //currentCorrected = corrected;
+
+    IplImage* bw;
+    IplImage* c = &corrected;
+    processImage(&c, &bw);
+    //    cout << "finding circles" << endl;
+    //CvSeq* circles = findCircles(bw, 1, 0);
+    CvMemStorage* storage = cvCreateMemStorage(0);
+    CvSeq* circles = findCircles(bw, storage);
+    visualizeStage(&corrected, circles, "Stage");
+    cvShowImage("Stage", &corrected);
+    if(circles->total == 1) {
+        float *p = (float*)cvGetSeqElem(circles, 0);
+	if(p != nullptr) {
+	  StagePoint center = StagePoint(cvRound(p[0]),cvRound(p[1]));
+	  return center;
+	}
+    }
+    cvClearMemStorage(storage);
+    cvReleaseMemStorage(&storage);
+
+    cvReleaseImage(&bw);
+    free(bw);
+    //cvShowImage("track", &corrected);
+  } else {
+    cout << "Corner detection failed.." << endl;
+  }
+  cvReleaseImageHeader(&source);
+  free(source);
+  if(tries > 3) 
+    return StagePoint();
+  else 
+    return findCircleFromStage(++tries);
+}
+
+vector<StagePoint> MVision::findCirclesFromStage()
+{
+  vector<StagePoint> positions;
+  IplImage* source = cvQueryFrame(cv_cap);
+
+  Mat src = cvarrToMat(source);
+  Mat quad = Mat::zeros(stageHeight, stageWidth, CV_8UC3);
+  
+  vector<Point2f> corners = detectCorners();
+
+  if(corners.size() == 4) {
+    // Corners of the destination image
+    std::vector<cv::Point2f> quad_pts;
+    quad_pts.push_back(cv::Point2f(0, 0));
+    quad_pts.push_back(cv::Point2f(quad.cols-1, 0));
+    quad_pts.push_back(cv::Point2f(quad.cols-1, quad.rows-1));
+    quad_pts.push_back(cv::Point2f(0, quad.rows-1));
+    
+    // Get transformation matrix
+    Mat transmtx = getPerspectiveTransform(corners, quad_pts);
+    
+    // Apply perspective transformation
+    warpPerspective(src, quad, transmtx, quad.size());
+
+    IplImage corrected = quad;
+    //currentCorrected = &corrected;
+
+    IplImage* bw;
+    IplImage* c = &corrected;
+    processImage(&c, &bw);
+    CvMemStorage* storage = cvCreateMemStorage(0);
+    CvSeq* circles = findCircles(bw, storage);
+    visualizeStage(&corrected, circles, "Stage");
+    cvShowImage("Stage", &corrected);
+
+    for (int i = 0; i < circles->total; i++) {
+      float *p = (float*)cvGetSeqElem(circles, i);
+      StagePoint center = StagePoint(cvRound(p[0]),cvRound(p[1]));
+      positions.push_back(center);
+      //CvScalar val = cvGet2D(source, center.y, center.x);
+      //if (val.val[0] < 1) continue;
+      //cvCircle(source, center, cvRound(p[2]+5), CV_RGB(0,255,0), 1, CV_AA, 0);
+    }
+        
+    cvClearMemStorage(storage);
+    cvReleaseMemStorage(&storage);
+
+    cvReleaseImage(&bw);
+    free(bw);
+  } else {
+    cout << ">>> Corner detection failed.." << endl;
+  }
+  cvReleaseImageHeader(&source);
+  free(source);
+  return positions;
+}
 
 CvSeq* MVision::findCircles(int target_count) 
 {
-  CvSeq* circles = findCircles(getImage());
+  return findCircles(target_count, 0);
+}
+
+CvSeq* MVision::findCircles(int target_count, int try_count) 
+{
+  IplImage* tmp = getImage();
+  return findCircles(tmp, target_count, try_count);
+}
+
+CvSeq* MVision::findCircles(IplImage* source, int target_count, int try_count) 
+{
+  CvMemStorage* storage = cvCreateMemStorage(0);
+  CvSeq* circles = findCircles(source, storage);
+  visualizeDetection(source, circles, "Detected");
   if(circles->total != target_count) {
-    calibrate(target_count);
-    return findCircles(target_count);
+    if(try_count > 5) {
+          calibrate(target_count);
+      try_count = 0;
+    }
+    try_count++;
+    cvClearMemStorage(storage);
+    cvReleaseMemStorage(&storage);
+      return findCircles(target_count, try_count);
   } else {
+    cvClearMemStorage(storage);
+    cvReleaseMemStorage(&storage);
     return circles;
   }
 }

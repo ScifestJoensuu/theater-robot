@@ -6,10 +6,21 @@ StageCorner::StageCorner()
 {
 }
 
+StageCorner::StageCorner(string n)
+{
+  name = n;
+}
 StageCorner::StageCorner(BluetoothConnection *bt)
 {
   connection = bt;
 }
+
+StageCorner::StageCorner(BluetoothConnection *bt, string n)
+{
+  connection = bt;
+  name = n;
+}
+
 /*
 void StageCorner::setWithCvPoint(CvPoint p)
 {
@@ -49,10 +60,18 @@ BluetoothConnection* StageCorner::getBluetoothConnection()
 
 bool StageCorner::switchOn()
 {
-  return connection->sendMessageAndWaitForResponse("led_on");
+  cout << ">> Switching " << name << " on" << endl;
+  bool ok = connection->sendMessageAndWaitForResponse("led_on");
+  if(ok) cout << ">>> ... OK" << endl;
+  else cout << ">>> ... FAIL" << endl;
+  return ok;
 }
 
 bool StageCorner::switchOff()
 {
-  return connection->sendMessageAndWaitForResponse("led_off");
+  cout << ">> Switching " << name << " off" << endl;
+  bool ok = connection->sendMessageAndWaitForResponse("led_off");
+  if(ok) cout << ">>> ... OK" << endl;
+  else cout << ">>> ... FAIL" << endl;
+  return ok;
 }

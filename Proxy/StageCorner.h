@@ -5,11 +5,14 @@
 //#include ""
 class StageCorner
 {
+  string name;
   StagePoint point;
   BluetoothConnection *connection;
  public:
   StageCorner();
+  StageCorner(string name);
   StageCorner(BluetoothConnection *c);
+  StageCorner(BluetoothConnection *c, string name);
   void setBluetoothConnection(BluetoothConnection *c);
   BluetoothConnection* getBluetoothConnection();
   bool switchOn();

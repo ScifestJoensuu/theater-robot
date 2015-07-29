@@ -34,6 +34,7 @@ class BluetoothConnection
   string getName();
   int sendMessage(string msg);
   bool sendMessageAndWaitForResponse(string msg);
+  bool sendMessageAndWaitForResponse(string msg, int ms);
   string readMessage();
 };
 

@@ -15,11 +15,17 @@ void dircetRobotTo(int x, int y);
 PlayDirector::PlayDirector()
 {
   script = new Script();
+  tracking = false;
 }
 
 void PlayDirector::startSession(int connection)
 {
 
+}
+
+void PlayDirector::setStage(Stage* s) 
+{
+  stage = s;
 }
 
 void PlayDirector::setArduinoConnection(ArduinoConnection* c)
@@ -82,9 +88,15 @@ void PlayDirector::executeCommand(ScriptCommand *cmd)
   }
 }
 
+void PlayDirector::setMVision(MVision* m) 
+{
+  this->mvision = m;
+}
+
 bool PlayDirector::directRobotTo(string robot_id, StagePoint p)
 {
   cout << ">> Directing robot to " << p.x << ", " << p.y << endl;
+  /*
   if(stage->robotAtPoint(robot_id, &p)) return true;
   Robot* robot = stage->getRobot(robot_id);
   StagePoint robot_location = stage->findRobot(robot);
@@ -105,11 +117,56 @@ bool PlayDirector::directRobotTo(string robot_id, StagePoint p)
   }
   robot->driveForward();
   
-  thread send(&PlayDirector::sendRobotLocation, this, robot);
+    thread send(&PlayDirector::sendRobotLocation, this, robot);
   //send.join();
   // wait
   
   return directRobotTo(robot_id, p);
+  */
+  Robot* r = stage->getRobot(robot_id);
+  while(!r->irOn());
+  tracking = true;
+  //thread t(&PlayDirector::trackRobot, this, r);
+  while(true) {
+    //StagePoint tmp = stage->findRobot(r);
+
+    StagePoint point = mvision->findCircleFromStage();
+    if(point.x != -1 && point.y != -1)
+      r->appendPosition(point);
+    StagePoint tmp = r->getPosition();
+
+    int distance = p.getDistance(&tmp);
+
+    cout << "Robot pos: " << tmp.x << ", " << tmp.y << endl;
+    cout << "Distance " << distance << endl;
+
+    if(distance < 20) {
+      cout << "Robot at the destination" << endl;
+      break;
+    }
+    int pdiff = r->diffBetweenPreviousPositions();
+    cout << "pdiff: " << pdiff << endl;
+    //  if(pdiff > 5)
+      stage->turnRobotTowards(r, p);
+    r->driveForward(250);
+  }
+  //  r->stop();
+  tracking = false;
+  //t.join();
+  while(!r->irOff());
+
+}
+
+void PlayDirector::trackRobot(Robot* r) 
+{
+  while(tracking) {
+    StagePoint point = mvision->findCircleFromStage();
+    StagePoint rpos = r->getPosition();
+    cout << point.x << ", " << point.y << endl;
+    if(point.x != -1 && point.y != -1 && point.getDistance(&rpos) > 5)
+      r->appendPosition(point);
+    usleep(100000);
+  }
 }
 
 bool PlayDirector::directRobotTo(string robot_id, string target_id)

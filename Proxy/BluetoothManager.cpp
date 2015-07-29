@@ -37,8 +37,13 @@ vector<BluetoothConnection*> BluetoothManager::scanDevices()
     }
     printf("%s  %s\n", addr, name);
     string startswith("Stage");
+    string startswith2("ActorRobot");
     string n = name;
     if(!n.compare(0, startswith.size(), startswith)) {
+      BluetoothConnection *tmp = new BluetoothConnection(name, addr);
+      devices.push_back(tmp);
+    }
+    if(!n.compare(0, startswith2.size(), startswith2)) {
       BluetoothConnection *tmp = new BluetoothConnection(name, addr);
       devices.push_back(tmp);
     }

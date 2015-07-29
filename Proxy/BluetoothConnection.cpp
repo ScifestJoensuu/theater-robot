@@ -11,7 +11,7 @@ BluetoothConnection::BluetoothConnection()
 
 BluetoothConnection::BluetoothConnection(string n, string addr)
 {
-	name = n;
+  name = n;
   init(addr);
 }
 int BluetoothConnection::getStatus() 
@@ -27,7 +27,7 @@ int BluetoothConnection::init(string addr)
  //strcpy(address, addr);
   address = addr;
 
-  initConnection();
+  //initConnection();
   connectBluetooth();
   //strcpy(address, addr);
   //  BluetoothConnection::establishConnection();
@@ -43,8 +43,6 @@ string BluetoothConnection::getAddress()
 }
 void BluetoothConnection::initConnection() 
 {
-  
-  cout << "Opening BT connection to: " << address.c_str() << endl;
 
   // allocate a socket
   s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
@@ -59,11 +57,16 @@ void BluetoothConnection::initConnection()
 
 bool BluetoothConnection::connectBluetooth()
 {
-  // connect to server
-  status = connect(s, (struct sockaddr *)&addr, sizeof(addr));
-  if(status < 0) cout << "Status " << status << ", errno " << strerror(errno) <<   endl;
-
-  if(status == 0) return true;
+  initConnection();
+  cout << "Opening BT connection to: " << address.c_str() << endl;
+ // connect to server
+  for(int i = 0; i < 1; i++) {
+    status = connect(s, (struct sockaddr *)&addr, sizeof(addr));
+    if(status < 0) cout << "Status " << status << ", errno " << strerror(errno) <<   endl;
+    if(status == 0) return true;
+    close(s);
+    sleep(1);
+  }
   return false;
 }
 
@@ -73,18 +76,29 @@ void BluetoothConnection::closeConnection()
   close(s);
 }
 
-bool BluetoothConnection::sendMessageAndWaitForResponse(string msg) 
+bool BluetoothConnection::sendMessageAndWaitForResponse(string msg)
+{
+  return sendMessageAndWaitForResponse(msg, 50);
+}
+
+bool BluetoothConnection::sendMessageAndWaitForResponse(string msg, int ms) 
 {
   //  cout << "Trying to send a message and wait for a response" << endl;
   try_counter++;
   int result = sendMessage(msg);
   if(result != -1) {
-    string response = readMessage();
-    if(!response.empty()) {
+    usleep(ms*1000);
+    string response = "";
+    for(int i = 0; i < 5; i++) {
+      response = readMessage();
+      if(response.size() > 3) break;
+    }
+    if(!response.empty() && response.find("ok") != string::npos && response.find(to_string(msg_counter-1)) != string::npos) {
+      //cout << response << endl;
       return true;
     } else if(try_counter > 5) {
       try_counter = 0;
-      cout << "Did not receive any response, giving up.." << endl;
+      //      cout << "Did not receive any response, giving up.." << endl;
       return false;
     } else {
       return sendMessageAndWaitForResponse(msg);
@@ -93,7 +107,7 @@ bool BluetoothConnection::sendMessageAndWaitForResponse(string msg)
     try_counter++;
     if(try_counter > 5) {
       try_counter = 0;
-      cout << "Did not receive any response, giving up.." << endl;
+      //      cout << "Did not receive any response, giving up.." << endl;
       return false;
     } else {
       return sendMessageAndWaitForResponse(msg);
@@ -111,11 +125,12 @@ int BluetoothConnection::sendMessage(string msg)
   //  connectBluetooth();
   if( status != -1 ) {
     string message = buildMessage(msg);
-    cout << "Sending message: '" << message << "'" << endl;
+            cout << "Sending message: '" << message << "'" << endl;
     status = write(s, message.c_str(), strlen(message.c_str()));
     if(status == -1) 
-      cout << "Status " << status << ", errno " << strerror(errno) << endl;
+        cout << "Status " << status << ", errno " << strerror(errno) << endl;
   }
+  //cout << status << endl;
   //  closeConnection();
   return status;
 }
@@ -123,13 +138,14 @@ int BluetoothConnection::sendMessage(string msg)
 string BluetoothConnection::readMessage() 
 {
   if(status == -1) connectBluetooth();
-  cout << "Trying to read a message" << endl;
+  //    cout << "Trying to read a message" << endl;
   //  connectBluetooth();
+  usleep(80000);
   char buf[1024] = {0};
   //while(buf != '}')
   if( status != -1 ) {
     int bytes_read = read(s, buf, sizeof(buf));
-    if(bytes_read > 0) printf("Received [%s]\n", buf);
+       if(bytes_read > 0) printf("Received [%s]\n", buf);
     //closeConnection();
   }
   //  closeConnection();

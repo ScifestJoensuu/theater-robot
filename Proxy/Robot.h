@@ -33,9 +33,13 @@ public:
 	int getX();
 	int getY();
 	StagePoint getPosition();
+	StagePoint firstPointFromCheckpoint();
+	vector<StagePoint> getPositions();
 	bool irOn();
 	bool irOff();
+	bool sendMessage(string msg);
 	void appendPosition(StagePoint p);
+	int getDirection();
 	int getShortDirection();
 	int getDirectionFromCheckpoint();
 	float getSpeed();
@@ -44,15 +48,21 @@ public:
 	time_t getCheckpoint();
 	void setColor(Color c);
 	Color getColor();
+	void setCalibratedTurnTime(float time);
+	int diffBetweenPreviousPositions();
 
 	bool driveForward();
 	bool driveForward(int time);
 	bool driveBackward();
 	bool driveBackward(int time);
-	bool turnRight(int degree);
-	bool turnLeft(int degree);
+	bool turnRight(int time);
+	bool turnRightDegree(int degree);
+	bool turnLeft(int time);
+	bool turnLeftDegree(int degree);
 	bool stop();
  private:
+	void init();
+	float calibrated_turn_time; 
 	string id;
 	string name;
 	int dirFromCheckpoint;

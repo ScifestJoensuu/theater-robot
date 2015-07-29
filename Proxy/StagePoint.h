@@ -10,6 +10,8 @@
 
 #include <ctime>
 #include <math.h>
+#include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -32,6 +34,7 @@ public:
 	int getX();
 	int getY();
 	*/
+	bool compareTo(StagePoint* p);
 };
 
 

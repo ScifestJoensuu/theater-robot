@@ -11,6 +11,7 @@
 #include "Stage.h"
 #include "Robot.h"
 #include "Script.h"
+#include "MVision.h"
 #include "ArduinoConnection.h"
 #include <thread>
 
@@ -18,16 +19,16 @@ class PlayDirector
 {
   Script* script;
   Stage* stage;
+  MVision* mvision;
   ArduinoConnection* ard;
-
+  bool tracking;
   void executeCommand(ScriptCommand *cmd);
-  bool directRobotTo(string robot_id, StagePoint p);
-  bool directRobotTo(string robot_id, string target_id);
   //  void test();
-
+  void trackRobot(Robot* r);
  public:
   PlayDirector();
   void setArduinoConnection(ArduinoConnection* c);
+  void setMVision(MVision* v);
   void executeScript();
   void executeScript(string script);
   void startSession(int connection);
@@ -37,6 +38,10 @@ class PlayDirector
   bool sendRobotLocation(Robot* r);
   bool sendAllRobotLocations();
   Stage* getStage();
+  bool directRobotTo(string robot_id, StagePoint p);
+  bool directRobotTo(string robot_id, string target_id);
+
+
   void test();
 };
 

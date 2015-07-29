@@ -12,11 +12,7 @@ using namespace std;
 class Stage 
 {
   const static int no_such_robot = 1;
-  int stageWidthCm;
-  int stageHeightCm;
-  int stageWidthPx;
-  int stageHeightPx;
-
+ 
   StageCorner *topLeft;
   StageCorner *topRight;
   StageCorner *bottomLeft;
@@ -28,6 +24,7 @@ class Stage
   BluetoothManager *btman;
   MVision* mvision;
   Robot::Color getColorForRobot();
+
  public:
   bool calibrated;
 
@@ -36,9 +33,17 @@ class Stage
   const static int BOTTOMLEFT = 3;
   const static int BOTTOMRIGHT = 4;
 
+  int stageWidthCm;
+  int stageHeightCm;
+  int stageWidthPx;
+  int stageHeightPx;
+
+
   Stage();
   void calibrateStage();
+  void calibrateRobot(Robot* r);
   void print();
+  void printRobots();
 
   void setBluetoothManager(BluetoothManager *btman);
   void setMVision(MVision *mv);
@@ -59,12 +64,15 @@ class Stage
   StageCorner* getBottomRightCorner();
   vector<StageCorner> getCorners();
 
+  vector<StagePoint> findObjects();
+  vector<StagePoint> findRobots();
   StagePoint findRobot(string id);
   StagePoint findRobot(Robot* r);
   bool robotAtPoint(string id, StagePoint* p);
   bool robotAtPoint(Robot* r, StagePoint* p);
   Robot* getRobot(string id);
   vector<Robot*> getRobots();
+  bool turnRobotTowards(Robot* r, StagePoint p);
 
   bool cornersOn();
   bool cornerOn(int corner);
